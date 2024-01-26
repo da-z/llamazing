@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import { Button } from "./rac/Button.tsx";
 import ollama from "ollama";
@@ -6,26 +6,43 @@ import { TextField } from "./rac/TextField.tsx";
 import { Bot, SendHorizonal } from "lucide-react";
 import MarkdownRenderer from "./MarkdownRenderer.tsx";
 
+const system_prompt = `You are a helpful AI assistant trained on a vast
+   amount of human knowledge. Answer as concisely as possible.`;
+
 function App() {
   const [prompt, setPrompt] = useState("Why is the sky blue?");
   const [response, setResponse] = useState("");
+  const [model, setModel] = useState("dolphin-mistral:2.6-dpo-laser-q6k");
+  const [messages, setMessages] = useState([
+    { role: "system", content: system_prompt },
+  ]);
 
-  const system_prompt = `You are a helpful AI assistant trained on a vast
-   amount of human knowledge. Answer as concisely as possible.`;
+  useEffect(() => {
+    (async () => {
+      setModel((await ollama.list()).models[0].name); // todo: use a selector
+    })();
+  }, []);
 
   const chat = async (message: string) => {
-    setResponse("");
+    const newMessages = [...messages, { role: "user", content: message }];
+
     const res = await ollama.chat({
-      model: "dolphin-mistral:2.6-dpo-laser-q6k",
-      messages: [
-        { role: "system", content: system_prompt },
-        { role: "user", content: message },
-      ],
+      model,
+      messages: newMessages,
       stream: true,
     });
+
+    let resp = "";
     for await (const part of res) {
-      setResponse((prev) => prev + part.message.content);
+      resp += part.message.content;
+      setResponse(resp);
     }
+
+    setMessages([
+      ...messages,
+      { role: "user", content: message },
+      { role: "assistant", content: resp },
+    ]);
   };
 
   const submit = async () => {
@@ -38,7 +55,7 @@ function App() {
   const handleKeyUp = async (e: KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      submit();
+      await submit();
     }
   };
 
@@ -56,6 +73,7 @@ function App() {
         <div className="flex h-12 gap-2">
           <TextField
             id="prompt"
+            aria-label="prompt"
             className="w-full"
             value={prompt}
             onChange={setPrompt}
