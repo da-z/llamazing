@@ -82,7 +82,7 @@ function App() {
           ></TextField>
           <Button
             isDisabled={!prompt}
-            className={`px-3 hover:cursor-pointer ${prompt ? "bg-black hover:bg-gray-700" : "bg-gray-500 hover:bg-gray-500"}`}
+            className={`px-3 ${prompt ? "bg-black hover:cursor-pointer hover:bg-gray-700" : "bg-gray-500 hover:bg-gray-500"}`}
             onPress={submit}
           >
             <SendHorizonal
