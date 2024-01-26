@@ -3,7 +3,7 @@ import {
   DatePicker as AriaDatePicker,
   DatePickerProps as AriaDatePickerProps,
   DateValue,
-  ValidationResult
+  ValidationResult,
 } from 'react-aria-components';
 import { Button } from './Button';
 import { Calendar } from './Calendar';
@@ -13,16 +13,13 @@ import { Description, FieldError, FieldGroup, Label } from './Field';
 import { Popover } from './Popover';
 import { composeTailwindRenderProps } from './utils';
 
-export interface DatePickerProps<T extends DateValue>
-  extends AriaDatePickerProps<T> {
+export interface DatePickerProps<T extends DateValue> extends AriaDatePickerProps<T> {
   label?: string;
   description?: string;
   errorMessage?: string | ((validation: ValidationResult) => string);
 }
 
-export function DatePicker<T extends DateValue>(
-  { label, description, errorMessage, ...props }: DatePickerProps<T>
-) {
+export function DatePicker<T extends DateValue>({ label, description, errorMessage, ...props }: DatePickerProps<T>) {
   return (
     <AriaDatePicker {...props} className={composeTailwindRenderProps(props.className, 'group flex flex-col gap-1')}>
       {label && <Label>{label}</Label>}

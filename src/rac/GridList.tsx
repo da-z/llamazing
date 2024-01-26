@@ -3,17 +3,21 @@ import {
   GridListItem as AriaGridListItem,
   Button,
   GridListItemProps,
-  GridListProps
+  GridListProps,
 } from 'react-aria-components';
 import { tv } from 'tailwind-variants';
 import { Checkbox } from './Checkbox';
 import { composeTailwindRenderProps, focusRing } from './utils';
 
-export function GridList<T extends object>(
-  { children, ...props }: GridListProps<T>
-) {
+export function GridList<T extends object>({ children, ...props }: GridListProps<T>) {
   return (
-    <AriaGridList {...props} className={composeTailwindRenderProps(props.className, 'overflow-auto relative border dark:border-zinc-600 rounded-lg')}>
+    <AriaGridList
+      {...props}
+      className={composeTailwindRenderProps(
+        props.className,
+        'overflow-auto relative border dark:border-zinc-600 rounded-lg',
+      )}
+    >
       {children}
     </AriaGridList>
   );
@@ -25,12 +29,12 @@ const itemStyles = tv({
   variants: {
     isSelected: {
       false: 'hover:bg-gray-100 dark:hover:bg-zinc-700/60',
-      true: 'bg-blue-100 dark:bg-blue-700/30 hover:bg-blue-200 dark:hover:bg-blue-700/40 border-y-blue-200 dark:border-y-blue-900 z-20'
+      true: 'bg-blue-100 dark:bg-blue-700/30 hover:bg-blue-200 dark:hover:bg-blue-700/40 border-y-blue-200 dark:border-y-blue-900 z-20',
     },
     isDisabled: {
-      true: 'text-slate-300 dark:text-zinc-600 forced-colors:text-[GrayText] z-10'
-    }
-  }
+      true: 'text-slate-300 dark:text-zinc-600 forced-colors:text-[GrayText] z-10',
+    },
+  },
 });
 
 export function GridListItem({ children, ...props }: GridListItemProps) {
@@ -41,9 +45,7 @@ export function GridListItem({ children, ...props }: GridListItemProps) {
         <>
           {/* Add elements for drag and drop and selection. */}
           {allowsDragging && <Button slot="drag">≡</Button>}
-          {selectionMode === 'multiple' && selectionBehavior === 'toggle' && (
-            <Checkbox slot="selection" />
-          )}
+          {selectionMode === 'multiple' && selectionBehavior === 'toggle' && <Checkbox slot="selection" />}
           {children}
         </>
       )}
