@@ -60,17 +60,17 @@ function App() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col gap-8 bg-neutral-600 p-10 font-sans text-white">
+    <div className="flex min-h-screen flex-col gap-2 bg-neutral-600 p-10 font-sans text-white">
       <h1 className="mb-4 flex select-none items-center gap-2 text-3xl">
-        <Bot className="inline-flex" /> LLaMazing
+        <Bot size="32" /> LLaMazing
       </h1>
 
       <div className="flex h-full flex-1 flex-col gap-2 overflow-y-auto pb-16">
         <MarkdownRenderer content={response} />
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-neutral-50 p-4">
-        <div className="flex h-12 gap-2">
+      <div className="fixed bottom-0 left-0 right-0 bg-neutral-50 p-2">
+        <div className="flex h-10 gap-2">
           <TextField
             id="prompt"
             aria-label="prompt"
