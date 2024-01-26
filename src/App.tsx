@@ -3,7 +3,7 @@ import "./App.css";
 import { Button } from "./rac/Button.tsx";
 import ollama from "ollama";
 import { TextField } from "./rac/TextField.tsx";
-import {Bot, SendHorizonal} from "lucide-react";
+import { Bot, SendHorizonal } from "lucide-react";
 import MarkdownRenderer from "./MarkdownRenderer.tsx";
 
 function App() {
@@ -44,7 +44,9 @@ function App() {
 
   return (
     <div className="flex min-h-screen flex-col gap-8 bg-neutral-600 p-10 font-sans text-white">
-      <h1 className="mb-4 select-none text-3xl flex gap-2 items-center"><Bot className="inline-flex"/> LLaMazing</h1>
+      <h1 className="mb-4 flex select-none items-center gap-2 text-3xl">
+        <Bot className="inline-flex" /> LLaMazing
+      </h1>
 
       <div className="flex h-full flex-1 flex-col gap-2 overflow-y-auto pb-16">
         <MarkdownRenderer content={response} />
@@ -62,10 +64,12 @@ function App() {
           ></TextField>
           <Button
             isDisabled={!prompt}
-            className={`px-3 hover:cursor-pointer ${prompt ? 'hover:bg-gray-700 bg-black' : 'hover:bg-gray-500 bg-gray-500'}`}
+            className={`px-3 hover:cursor-pointer ${prompt ? "bg-black hover:bg-gray-700" : "bg-gray-500 hover:bg-gray-500"}`}
             onPress={submit}
           >
-            <SendHorizonal className={`h-4 w-4 -rotate-90 font-bold  ${prompt ? 'text-white' : 'text-gray-400'}`} />
+            <SendHorizonal
+              className={`h-4 w-4 -rotate-90 font-bold  ${prompt ? "text-white" : "text-gray-400"}`}
+            />
           </Button>
         </div>
       </div>
