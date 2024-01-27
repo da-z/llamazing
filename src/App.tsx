@@ -1,12 +1,14 @@
-import React, { KeyboardEvent, useEffect, useState } from "react";
+import { KeyboardEvent, useEffect, useState } from "react";
 import "./App.css";
 import { Button } from "./rac/Button.tsx";
 import ollama, { Message } from "ollama";
-import { Bot, CircleUserRound, Globe, SendHorizonal, User } from "lucide-react";
+import { Bot, CircleUserRound, Globe, SendHorizonal } from "lucide-react";
 import MarkdownRenderer from "./MarkdownRenderer.tsx";
-import { TextArea, TooltipTrigger } from "react-aria-components";
-import { Input, Label } from "./rac/Field.tsx";
+import { Label } from "./rac/Field.tsx";
 import { Tooltip } from "./rac/Tooltip.tsx";
+import { TextArea, TooltipTrigger } from "react-aria-components";
+import { Select } from "./rac/Select.tsx";
+import { ListBoxItem } from "./rac/ListBox.tsx";
 
 function App() {
   const [prompt, setPrompt] = useState(``);
@@ -20,9 +22,11 @@ function App() {
 
   useEffect(() => {
     (async () => {
-      const availableModels = (await ollama.list()).models.map((m) => m.name);
-      setModels(availableModels);
-      setModel(availableModels[0]);
+      const _models = (await ollama.list()).models.map((m) => m.name);
+      setModels(_models);
+      if (_models.length) {
+        setModel(_models[0]);
+      }
     })();
   }, []);
 
@@ -35,6 +39,7 @@ function App() {
 
     setMessages((prev) => [...prev, { role: "user", content: message }]);
 
+    setResponse(" ");
     const res = await ollama.chat({
       model,
       messages: newMessages,
@@ -59,11 +64,11 @@ function App() {
   const submit = async () => {
     if (prompt) {
       setPrompt("");
-      await chat(prompt);
+      await chat(prompt.trim());
     }
   };
 
-  const handleKeyUp = async (e: KeyboardEvent) => {
+  const handleKeyDown = async (e: KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       await submit();
@@ -87,16 +92,21 @@ function App() {
         <TextArea
           id="system-prompt"
           aria-label="system-prompt"
-          className="mt-2 h-32 rounded-xl border-2 border-gray-400/40 bg-neutral-800 p-4 text-sm text-neutral-200 outline-none focus:border-gray-400"
+          className="mt-2 h-32 rounded-xl border-2 border-neutral-400/40 bg-neutral-800 p-4 text-sm text-neutral-200 outline-none focus:border-neutral-400"
           value={systemPrompt}
           onChange={(e) => setSystemPrompt(e.target.value)}
         />
 
-        <div className="absolute bottom-0 left-0">
-          {/*todo: add selector*/}
-          <div className="inline-flex w-full select-none p-4 text-sm text-gray-200/20">
-            {model}
-          </div>
+        <div className="absolute bottom-0 left-0 w-full p-4">
+          <Select
+            selectedKey={model}
+            aria-label="select-model"
+            onSelectionChange={(s) => setModel(String(s))}
+          >
+            {models.map((m) => (
+              <ListBoxItem id={m}>{m}</ListBoxItem>
+            ))}
+          </Select>
         </div>
       </aside>
 
@@ -140,7 +150,7 @@ function App() {
                   size="30"
                 />
                 <div className="prose mt-[3px] flex flex-col gap-2 pr-8">
-                  <MarkdownRenderer content={response} />
+                  <MarkdownRenderer content={response + "▌"} />
                 </div>
               </>
             ) : (
@@ -149,21 +159,21 @@ function App() {
           </div>
 
           <div className="absolute bottom-0 left-0 right-0 px-14 py-8">
-            <div className="flex rounded-xl border-2 border-neutral-500/50 p-2 has-[:focus]:border-neutral-200">
+            <div className="flex rounded-xl border-2 border-neutral-500/50 p-2 has-[:focus]:border-neutral-400">
               <TextArea
                 id="prompt"
                 aria-label="prompt"
                 className="mr-2 w-full resize-none bg-transparent p-2 text-white"
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
-                onKeyUp={handleKeyUp}
+                onKeyDown={handleKeyDown}
                 autoFocus
                 placeholder="Your message here..."
               />
               <TooltipTrigger delay={750} closeDelay={10}>
                 <Button
                   isDisabled={!prompt}
-                  className={`${prompt ? "bg-black hover:cursor-pointer hover:bg-gray-700" : "bg-gray-500 hover:bg-gray-500"}`}
+                  className={`${prompt ? "bg-black hover:cursor-pointer hover:bg-neutral-800" : "bg-neutral-500 hover:bg-neutral-200"}`}
                   onPress={submit}
                 >
                   <SendHorizonal
