@@ -10,6 +10,9 @@ import { TextArea, TooltipTrigger } from "react-aria-components";
 import { Select } from "./rac/Select.tsx";
 import { ListBoxItem } from "./rac/ListBox.tsx";
 
+const super_prompt =
+  "*Always* format your responses in Markdown format, unless requested otherwise";
+
 function App() {
   const [prompt, setPrompt] = useState(``);
   const [systemPrompt, setSystemPrompt] = useState(
@@ -32,7 +35,7 @@ function App() {
 
   const chat = async (message: string) => {
     const newMessages = [
-      { role: "system", content: systemPrompt },
+      { role: "system", content: systemPrompt + "\n\n" + super_prompt },
       ...messages,
       { role: "user", content: message },
     ];
