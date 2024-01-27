@@ -2,7 +2,7 @@ import React, { KeyboardEvent, useEffect, useState } from "react";
 import "./App.css";
 import { Button } from "./rac/Button.tsx";
 import ollama, { Message } from "ollama";
-import { Bot, Globe, SendHorizonal, User } from "lucide-react";
+import { Bot, CircleUserRound, Globe, SendHorizonal, User } from "lucide-react";
 import MarkdownRenderer from "./MarkdownRenderer.tsx";
 import { TextArea } from "react-aria-components";
 import { Input, Label } from "./rac/Field.tsx";
@@ -81,7 +81,7 @@ function App() {
 
         <div className="mb-2 mt-8 flex select-none items-center gap-2">
           <Globe
-            className="mt-0.5 rounded bg-blue-400 p-[6px] text-white"
+            className="mt-0.5 rounded bg-blue-400 p-[6px] text-blue-900"
             size="30"
           />
           <Label className="">System Prompt:</Label>
@@ -110,15 +110,14 @@ function App() {
                 {
                   {
                     user: (
-                      <User
-                        className="rounded bg-orange-400 p-[6px] text-white"
+                      <CircleUserRound
+                        className="rounded bg-orange-400 p-[6px] text-orange-900"
                         size="30"
-                        strokeWidth="2pt"
                       />
                     ),
                     assistant: (
                       <Bot
-                        className="rounded bg-yellow-400 p-[4px] text-white"
+                        className="rounded bg-yellow-400 p-[4px] text-yellow-900"
                         size="30"
                       />
                     ),
