@@ -7,9 +7,6 @@ import MarkdownRenderer from "./MarkdownRenderer.tsx";
 import { TextArea } from "react-aria-components";
 import { Input, Label } from "./rac/Field.tsx";
 
-const super_prompt =
-  "Always format your responses in Markdown format, unless requested otherwise";
-
 function App() {
   const [prompt, setPrompt] = useState(``);
   const [systemPrompt, setSystemPrompt] = useState(
@@ -30,7 +27,7 @@ function App() {
 
   const chat = async (message: string) => {
     const newMessages = [
-      { role: "system", content: systemPrompt + "\n\n" + super_prompt },
+      { role: "system", content: systemPrompt },
       ...messages,
       { role: "user", content: message },
     ];

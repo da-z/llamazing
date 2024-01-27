@@ -4,10 +4,10 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import copy from "clipboard-copy";
 import { Button } from "./rac/Button.tsx";
 import remarkMath from "remark-math";
-import rehypeKatex from "rehype-katex";
 import remarkGfm from "remark-gfm";
 import { atomDark as style } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import { Clipboard, ClipboardCheck } from "lucide-react";
+import rehypeMathjax from "rehype-mathjax";
 
 interface CodeBlockProps {
   language: string;
@@ -78,7 +78,7 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm, remarkMath]}
-      rehypePlugins={[rehypeKatex]}
+      rehypePlugins={[rehypeMathjax]}
       children={content}
       components={{
         code: Code,
