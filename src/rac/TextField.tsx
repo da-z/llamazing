@@ -26,6 +26,7 @@ export interface TextFieldProps extends AriaTextFieldProps {
   label?: string;
   description?: string;
   errorMessage?: string | ((validation: ValidationResult) => string);
+  placeholder?: string;
 }
 
 export function TextField({
@@ -43,7 +44,7 @@ export function TextField({
       )}
     >
       {label && <Label>{label}</Label>}
-      <Input className={inputStyles} />
+      <Input className={inputStyles} placeholder={props.placeholder} />
       {description && <Description>{description}</Description>}
       <FieldError>{errorMessage}</FieldError>
     </AriaTextField>
