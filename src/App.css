@@ -1,5 +1,9 @@
+html {
+  font-size: 0.9rem;
+}
+
 code {
-  font-size: 0.8rem !important;
+  font-size: 0.75rem !important;
   font-family: "IBM Plex Mono", monospace !important;
 }
 
@@ -8,6 +12,6 @@ p code {
 }
 
 #prompt {
-  font-size: 1rem;
+  font-size: 0.9rem;
   outline: none;
 }
