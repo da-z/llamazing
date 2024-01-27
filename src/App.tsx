@@ -42,6 +42,7 @@ function App() {
       messages: newMessages,
       stream: true,
       options: {
+        stop: ["<|im_start|>", "<|im_end|>", "<s>", "</s>"],
         // temperature: 0.5,
         // num_ctx: 2048,
       },
@@ -88,7 +89,7 @@ function App() {
         <TextArea
           id="system-prompt"
           aria-label="system-prompt"
-          className="mt-2 h-32 rounded-xl border-2 border-gray-400/40 bg-neutral-800 p-2 text-sm text-neutral-200 outline-none focus:border-gray-400"
+          className="mt-2 h-32 rounded-xl border-2 border-gray-400/40 bg-neutral-800 p-4 text-sm text-neutral-200 outline-none focus:border-gray-400"
           value={systemPrompt}
           onChange={(e) => setSystemPrompt(e.target.value)}
         />
