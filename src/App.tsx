@@ -100,7 +100,7 @@ function App() {
       </aside>
 
       <main className="flex-1">
-        <div className="relative m-auto flex h-full flex-col gap-2 bg-neutral-700 px-10 pb-32 pt-20">
+        <div className="relative m-auto flex h-full flex-col gap-2 bg-neutral-700 px-10 pb-40 pt-20">
           <div className="mt-4 grid grid-cols-[auto_minmax(0,_1fr)] gap-4 overflow-y-auto">
             <Bot
               className="rounded bg-yellow-400 p-[4px] text-yellow-900"
@@ -149,10 +149,10 @@ function App() {
 
           <div className="absolute bottom-0 left-0 right-0 px-14 py-8">
             <div className="flex rounded-xl border-2 border-neutral-500/50 p-2 has-[:focus]:border-neutral-200">
-              <Input
+              <TextArea
                 id="prompt"
                 aria-label="prompt"
-                className="w-full bg-transparent text-white"
+                className="mr-2 w-full resize-none bg-transparent p-2 text-white"
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 onKeyUp={handleKeyUp}
@@ -161,11 +161,12 @@ function App() {
               />
               <Button
                 isDisabled={!prompt}
-                className={`px-3 ${prompt ? "bg-black hover:cursor-pointer hover:bg-gray-700" : "bg-gray-500 hover:bg-gray-500"}`}
+                className={`${prompt ? "bg-black hover:cursor-pointer hover:bg-gray-700" : "bg-gray-500 hover:bg-gray-500"}`}
                 onPress={submit}
               >
                 <SendHorizonal
-                  className={`h-4 w-4 -rotate-90 font-bold  ${prompt ? "text-white" : "text-gray-400"}`}
+                  size="20"
+                  className={`-rotate-90 font-bold ${prompt ? "text-white" : "text-gray-400"}`}
                 />
               </Button>
             </div>
