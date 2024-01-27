@@ -4,8 +4,9 @@ import { Button } from "./rac/Button.tsx";
 import ollama, { Message } from "ollama";
 import { Bot, CircleUserRound, Globe, SendHorizonal, User } from "lucide-react";
 import MarkdownRenderer from "./MarkdownRenderer.tsx";
-import { TextArea } from "react-aria-components";
+import { TextArea, TooltipTrigger } from "react-aria-components";
 import { Input, Label } from "./rac/Field.tsx";
+import { Tooltip } from "./rac/Tooltip.tsx";
 
 function App() {
   const [prompt, setPrompt] = useState(``);
@@ -159,16 +160,19 @@ function App() {
                 autoFocus
                 placeholder="Your message here..."
               />
-              <Button
-                isDisabled={!prompt}
-                className={`${prompt ? "bg-black hover:cursor-pointer hover:bg-gray-700" : "bg-gray-500 hover:bg-gray-500"}`}
-                onPress={submit}
-              >
-                <SendHorizonal
-                  size="20"
-                  className={`-rotate-90 font-bold ${prompt ? "text-white" : "text-gray-400"}`}
-                />
-              </Button>
+              <TooltipTrigger delay={750} closeDelay={10}>
+                <Button
+                  isDisabled={!prompt}
+                  className={`${prompt ? "bg-black hover:cursor-pointer hover:bg-gray-700" : "bg-gray-500 hover:bg-gray-500"}`}
+                  onPress={submit}
+                >
+                  <SendHorizonal
+                    size="20"
+                    className={`-rotate-90 font-bold ${prompt ? "text-white" : "text-gray-400"}`}
+                  />
+                </Button>
+                <Tooltip>Send</Tooltip>
+              </TooltipTrigger>
             </div>
           </div>
         </div>

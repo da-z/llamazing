@@ -8,6 +8,8 @@ import remarkGfm from "remark-gfm";
 import { atomDark as style } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import { Clipboard, ClipboardCheck } from "lucide-react";
 import rehypeMathjax from "rehype-mathjax";
+import { Tooltip } from "./rac/Tooltip.tsx";
+import { TooltipTrigger } from "react-aria-components";
 
 interface CodeBlockProps {
   language: string;
@@ -37,16 +39,20 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ language, value }) => {
 
   return (
     <div className="group relative">
-      <Button
-        className="absolute right-2 top-2 bg-gray-800 p-1 text-white opacity-0 group-hover:opacity-100"
-        onPress={handleCopyClick}
-      >
-        {copied ? (
-          <ClipboardCheck className="h-4 w-4" />
-        ) : (
-          <Clipboard className="h-4 w-4" />
-        )}
-      </Button>
+      <TooltipTrigger delay={500} closeDelay={10}>
+        <Button
+          className="absolute right-2 top-2 bg-gray-800 p-1 text-white opacity-0 group-hover:opacity-100"
+          onPress={handleCopyClick}
+        >
+          {copied ? (
+            <ClipboardCheck className="h-4 w-4" />
+          ) : (
+            <Clipboard className="h-4 w-4" />
+          )}
+        </Button>
+        <Tooltip>Copy</Tooltip>
+      </TooltipTrigger>
+
       <SyntaxHighlighter
         language={language}
         style={style}
