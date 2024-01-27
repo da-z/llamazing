@@ -3,7 +3,7 @@ import "./App.css";
 import { Button } from "./rac/Button.tsx";
 import ollama from "ollama";
 import { TextField } from "./rac/TextField.tsx";
-import { Bot, SendHorizonal } from "lucide-react";
+import { Bot, Globe, SendHorizonal, User } from "lucide-react";
 import MarkdownRenderer from "./MarkdownRenderer.tsx";
 
 const system_prompt = `You are a helpful AI assistant trained on a vast
@@ -12,19 +12,24 @@ const system_prompt = `You are a helpful AI assistant trained on a vast
 function App() {
   const [prompt, setPrompt] = useState("Why is the sky blue?");
   const [response, setResponse] = useState("");
-  const [model, setModel] = useState("dolphin-mistral:2.6-dpo-laser-q6k");
+  const [models, setModels] = useState<string[]>([]);
+  const [model, setModel] = useState("");
   const [messages, setMessages] = useState([
     { role: "system", content: system_prompt },
   ]);
 
   useEffect(() => {
     (async () => {
-      setModel((await ollama.list()).models[0].name); // todo: use a selector
+      const availableModels = (await ollama.list()).models.map((m) => m.name);
+      setModels(availableModels);
+      setModel(availableModels[0]);
     })();
   }, []);
 
   const chat = async (message: string) => {
     const newMessages = [...messages, { role: "user", content: message }];
+
+    setMessages((prev) => [...prev, { role: "user", content: message }]);
 
     const res = await ollama.chat({
       model,
@@ -37,12 +42,9 @@ function App() {
       resp += part.message.content;
       setResponse(resp);
     }
+    setResponse("");
 
-    setMessages([
-      ...messages,
-      { role: "user", content: message },
-      { role: "assistant", content: resp },
-    ]);
+    setMessages((prev) => [...prev, { role: "assistant", content: resp }]);
   };
 
   const submit = async () => {
@@ -60,13 +62,41 @@ function App() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col gap-2 bg-neutral-600 p-10 font-sans text-white">
-      <h1 className="mb-4 flex select-none items-center gap-2 text-3xl">
+    <div className="relative flex min-h-svh flex-col gap-2 bg-neutral-600 p-10 font-sans text-white">
+      <h1 className="flex select-none items-center gap-2 text-3xl">
         <Bot size="32" /> LLaMazing
       </h1>
 
-      <div className="flex h-full flex-1 flex-col gap-2 overflow-y-auto pb-16">
-        <MarkdownRenderer content={response} />
+      <div className="absolute right-4 top-4">
+        {/*todo: add selector*/}
+        <span className="select-none text-sm text-gray-200/20">{model}</span>
+      </div>
+
+      <div className="mt-4 grid h-full grid-cols-[auto_minmax(0,_1fr)] gap-2 overflow-y-auto pb-10">
+        {messages.map((m, i) => (
+          <>
+            {
+              {
+                system: <Globe size="24" />,
+                user: <User size="24" />,
+                assistant: <Bot size="24" />,
+              }[m.role]
+            }
+            <div>
+              <MarkdownRenderer content={m.content} />
+            </div>
+          </>
+        ))}
+        {response ? (
+          <>
+            <Bot size="24" />
+            <div>
+              <MarkdownRenderer content={response} />
+            </div>
+          </>
+        ) : (
+          ""
+        )}
       </div>
 
       <div className="fixed bottom-0 left-0 right-0 bg-neutral-50 p-2">

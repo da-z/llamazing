@@ -7,8 +7,6 @@ import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import remarkGfm from "remark-gfm";
 import { atomDark as style } from "react-syntax-highlighter/dist/cjs/styles/prism";
-import { ClipboardDocumentCheckIcon } from "@heroicons/react/20/solid";
-import { ClipboardDocumentIcon } from "@heroicons/react/16/solid";
 import { Clipboard, ClipboardCheck } from "lucide-react";
 
 interface CodeBlockProps {
