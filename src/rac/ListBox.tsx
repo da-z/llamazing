@@ -49,7 +49,7 @@ export const itemStyles = tv({
 });
 
 export function ListBoxItem(props: ListBoxItemProps) {
-  let textValue =
+  const textValue =
     props.textValue ||
     (typeof props.children === "string" ? props.children : undefined);
   return (
@@ -78,7 +78,7 @@ export const dropdownItemStyles = tv({
 });
 
 export function DropdownItem(props: ListBoxItemProps) {
-  let textValue =
+  const textValue =
     props.textValue ||
     (typeof props.children === "string" ? props.children : undefined);
   return (

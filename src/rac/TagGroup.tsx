@@ -108,8 +108,8 @@ const removeButtonStyles = tv({
 });
 
 export function Tag({ children, color, ...props }: TagProps) {
-  let textValue = typeof children === "string" ? children : undefined;
-  let groupColor = useContext(ColorContext);
+  const textValue = typeof children === "string" ? children : undefined;
+  const groupColor = useContext(ColorContext);
   return (
     <AriaTag
       textValue={textValue}

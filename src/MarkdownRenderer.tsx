@@ -14,6 +14,12 @@ interface CodeBlockProps {
   value: string;
 }
 
+interface CodeProps {
+  inline?: boolean;
+  className?: string;
+  children: React.ReactNode;
+}
+
 const CodeBlock: React.FC<CodeBlockProps> = ({ language, value }) => {
   const [copied, setCopied] = React.useState(false);
 
@@ -56,6 +62,18 @@ interface MarkdownRendererProps {
   content: string;
 }
 
+const Code: React.FC<CodeProps> = ({ inline, className, children }) => {
+  const match = /language-(\w+)/.exec(className || "");
+  return !inline && match ? (
+    <CodeBlock
+      language={match[1]}
+      value={String(children).replace(/\n$/, "")}
+    />
+  ) : (
+    <code className={className}>{children}</code>
+  );
+};
+
 const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
   return (
     <ReactMarkdown
@@ -63,19 +81,7 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
       rehypePlugins={[rehypeKatex]}
       children={content}
       components={{
-        code({ node, inline, className, children, ...props }) {
-          const match = /language-(\w+)/.exec(className || "");
-          return !inline && match ? (
-            <CodeBlock
-              language={match[1]}
-              value={String(children).replace(/\n$/, "")}
-            />
-          ) : (
-            <code className={className} {...props}>
-              {children}
-            </code>
-          );
-        },
+        code: Code,
       }}
     />
   );

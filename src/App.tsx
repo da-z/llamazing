@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { KeyboardEvent, useEffect, useState } from "react";
 import "./App.css";
 import { Button } from "./rac/Button.tsx";
 import ollama, { Message } from "ollama";
@@ -69,7 +69,7 @@ function App() {
   };
 
   return (
-    <div className="relative flex min-h-svh flex-col gap-2 bg-neutral-600 p-14 font-sans text-white">
+    <div className="relative flex min-h-svh flex-col gap-2 bg-neutral-600 px-10 pt-14 font-sans text-white">
       <h1 className="flex select-none items-center gap-2 text-3xl">
         <Bot size="32" /> LLaMazing
       </h1>
@@ -79,7 +79,7 @@ function App() {
         <span className="select-none text-sm text-gray-200/20">{model}</span>
       </div>
 
-      <div className="mt-4 grid h-full grid-cols-[auto_minmax(0,_1fr)] gap-4 overflow-y-auto pb-10">
+      <div className="mt-4 grid h-full grid-cols-[auto_minmax(0,_1fr)] gap-4 overflow-y-auto pb-20">
         <>
           <Globe
             className="mt-0.5 rounded bg-blue-400 p-[6px] text-white"
@@ -88,12 +88,12 @@ function App() {
           <TextArea
             id="system-prompt"
             aria-label="system-prompt"
-            className="rounded border-2 border-gray-400/40 bg-gray-800 p-2 text-gray-200 outline-none"
+            className="rounded-xl border-2 border-gray-400/40 bg-gray-800 p-2 text-gray-200 outline-none"
             value={systemPrompt}
             onChange={(e) => setSystemPrompt(e.target.value)}
           />
         </>
-        {messages.map((m, i) => (
+        {messages.map((m) => (
           <>
             {
               {
@@ -141,7 +141,7 @@ function App() {
             value={prompt}
             onChange={setPrompt}
             onKeyUp={handleKeyUp}
-            autoFocus="true"
+            autoFocus
             placeholder="Your message here..."
           />
           <Button

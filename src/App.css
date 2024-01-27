@@ -3,6 +3,10 @@ code {
   font-family: "IBM Plex Mono", monospace !important;
 }
 
+p code {
+  color: rgb(168, 255, 96);
+}
+
 #prompt {
   font-size: 1rem;
   outline: none;
