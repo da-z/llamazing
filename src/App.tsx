@@ -10,9 +10,6 @@ import { TextArea, TooltipTrigger } from "react-aria-components";
 import { Select } from "./rac/Select.tsx";
 import { ListBoxItem } from "./rac/ListBox.tsx";
 
-const super_prompt =
-  "*Always* format your responses in Markdown format, unless requested otherwise";
-
 function App() {
   const [prompt, setPrompt] = useState(``);
   const [systemPrompt, setSystemPrompt] = useState(
@@ -35,7 +32,7 @@ function App() {
 
   const chat = async (message: string) => {
     const newMessages = [
-      { role: "system", content: systemPrompt + "\n\n" + super_prompt },
+      { role: "system", content: systemPrompt },
       ...messages,
       { role: "user", content: message },
     ];
@@ -81,7 +78,7 @@ function App() {
   return (
     <div className="flex h-screen bg-neutral-800 font-sans text-white">
       <aside className="relative hidden h-screen w-0 flex-col p-4 py-2 md:flex md:w-[300px]">
-        <h1 className="mx-auto mt-4 flex gap-2 text-3xl">
+        <h1 className="mx-auto mt-4 flex select-none gap-2 text-3xl">
           <Bot size="32" /> LLaMazing
         </h1>
 
@@ -175,13 +172,13 @@ function App() {
               />
               <TooltipTrigger delay={750} closeDelay={10}>
                 <Button
-                  isDisabled={!prompt}
-                  className={`${prompt ? "bg-black hover:cursor-pointer hover:bg-neutral-800" : "bg-neutral-500 hover:bg-neutral-200"}`}
+                  isDisabled={!prompt || models.length == 0}
+                  className={`${prompt && models.length ? "bg-black hover:cursor-pointer hover:bg-neutral-800" : "bg-neutral-500 hover:bg-neutral-200"}`}
                   onPress={submit}
                 >
                   <SendHorizonal
                     size="20"
-                    className={`-rotate-90 font-bold ${prompt ? "text-white" : "text-gray-400"}`}
+                    className={`-rotate-90 font-bold ${prompt && models.length ? "text-white" : "text-gray-400"}`}
                   />
                 </Button>
                 <Tooltip>Send</Tooltip>
