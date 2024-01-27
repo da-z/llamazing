@@ -105,6 +105,13 @@ function App() {
       <main className="flex-1">
         <div className="relative m-auto flex h-full flex-col gap-2 bg-neutral-700 px-10 pb-32 pt-20">
           <div className="mt-4 grid grid-cols-[auto_minmax(0,_1fr)] gap-4 overflow-y-auto">
+            <Bot
+              className="rounded bg-yellow-400 p-[4px] text-yellow-900"
+              size="30"
+            />
+            <div className="mt-[3px] flex flex-col gap-2 pr-8">
+              How may I help you?
+            </div>
             {messages.map((m) => (
               <>
                 {
@@ -131,7 +138,7 @@ function App() {
             {response ? (
               <>
                 <Bot
-                  className="rounded bg-yellow-400 p-[4px] text-white"
+                  className="rounded bg-yellow-400 p-[4px] text-yellow-900"
                   size="30"
                 />
                 <div className="prose mt-[3px] flex flex-col gap-2 pr-8">
