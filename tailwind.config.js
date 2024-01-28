@@ -11,8 +11,8 @@ export default {
     },
   },
   plugins: [
-    "tailwindcss-react-aria-components",
-    "tailwindcss-animate",
     "@tailwindcss/typography",
+    "tailwindcss-animate",
+    "tailwindcss-react-aria-components",
   ],
 };

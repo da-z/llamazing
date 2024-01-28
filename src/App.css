@@ -1,12 +1,17 @@
 code {
-  font-size: 0.85rem !important;
+  font-size: 0.86rem !important;
   font-family: "IBM Plex Mono", monospace !important;
 }
 
-p code {
+.dark p code {
   color: rgb(80, 250, 123);
 }
 
-.prose > ol > li {
+.light p code {
+  color: rgb(34, 142, 236);
+  font-weight: bold;
+}
+
+.prose ol li {
   margin-bottom: 1rem;
 }

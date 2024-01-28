@@ -2,7 +2,9 @@
 
 A simple frontend to Ollama.
 
-![](screenshot.png)
+| Light Theme               | Dark Theme               |
+|---------------------------|--------------------------|
+| ![](screenshot-light.png) | ![](screenshot-dark.png) |
 
 ## Install
 

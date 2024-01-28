@@ -9,21 +9,22 @@ import { Clipboard, ClipboardCheck } from "lucide-react";
 import rehypeMathjax from "rehype-mathjax";
 import { Tooltip } from "./rac/Tooltip.tsx";
 import { TooltipTrigger } from "react-aria-components";
-import { dracula } from "react-syntax-highlighter/dist/esm/styles/prism";
+import * as themes from "react-syntax-highlighter/dist/esm/styles/prism";
+import { github } from "./assets/prism/themes/github.ts";
 
 interface CodeBlockProps {
   language: string;
   value: string;
-  style?: { [key: string]: React.CSSProperties };
+  theme?: "dark" | "light";
 }
 
 interface CodeProps {
   className?: string;
   children?: React.ReactNode;
-  style?: { [key: string]: React.CSSProperties };
+  theme?: "dark" | "light";
 }
 
-const CodeBlock: React.FC<CodeBlockProps> = ({ language, value, style }) => {
+const CodeBlock: React.FC<CodeBlockProps> = ({ language, value, theme }) => {
   const [copied, setCopied] = React.useState(false);
 
   const handleCopyClick = async () => {
@@ -33,16 +34,18 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ language, value, style }) => {
   };
 
   const customSyntaxHighlighterStyle = {
-    borderRadius: "0.4rem",
+    borderRadius: "0.5rem",
     fontSize: "0.7rem",
     minHeight: "2.6rem",
+    padding: "1.2rem 1rem",
+    overflow: "scroll",
   } as React.CSSProperties;
 
   return (
-    <div className="group relative mt-2">
+    <div className="group relative my-2">
       <TooltipTrigger delay={500} closeDelay={10}>
         <Button
-          className="absolute right-2 top-2 bg-gray-800 p-1 text-white opacity-0 group-hover:opacity-100"
+          className="absolute right-3 top-3 border-none bg-gray-500 p-1.5 text-white opacity-0 group-hover:opacity-100 "
           onPress={handleCopyClick}
         >
           {copied ? (
@@ -54,14 +57,17 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ language, value, style }) => {
         <Tooltip>Copy</Tooltip>
       </TooltipTrigger>
 
-      <span className="absolute bottom-2 right-2 text-xs text-white/20 opacity-100 group-hover:opacity-0">
+      <span className="absolute bottom-2 right-2 text-xs text-black/50 opacity-100 group-hover:opacity-0 dark:text-white/50">
         {language}
       </span>
 
       <SyntaxHighlighter
         language={language}
-        style={style}
-        customStyle={customSyntaxHighlighterStyle}
+        style={theme === "dark" ? themes.dracula : github}
+        customStyle={{
+          ...customSyntaxHighlighterStyle,
+          ...(theme === "light" ? { backgroundColor: "#fafafa" } : {}),
+        }}
       >
         {value}
       </SyntaxHighlighter>
@@ -71,32 +77,38 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ language, value, style }) => {
 
 interface MarkdownRendererProps {
   content: string;
-  style?: { [key: string]: React.CSSProperties };
+  theme?: "dark" | "light";
 }
 
-const Code: React.FC<CodeProps> = ({ className, children, style }) => {
+const Code: React.FC<CodeProps> = ({ className, children, theme }) => {
   const match = /language-(\w+)/.exec(className || "");
   return match ? (
     <CodeBlock
       language={match[1]}
       value={String(children).replace(/\n$/, "")}
-      style={style}
+      theme={theme}
     />
   ) : (
-    <code className={className} style={style}>
+    <code
+      className={className}
+      style={theme === "dark" ? themes.dracula : github}
+    >
       {children}
     </code>
   );
 };
 
-const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
+const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
+  content,
+  theme,
+}) => {
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm, remarkMath]}
       rehypePlugins={[rehypeMathjax]}
       children={content}
       components={{
-        code: (props) => <Code {...props} style={dracula} />,
+        code: (props) => <Code {...props} theme={theme} />,
       }}
     />
   );
