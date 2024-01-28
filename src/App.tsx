@@ -189,7 +189,7 @@ function App() {
               )}
             </div>
 
-            <div className="absolute bottom-0 left-0 right-0 px-14 py-8">
+            <div className="absolute bottom-0 left-0 right-0 px-4 py-8">
               <div className="flex rounded-xl border-2 border-neutral-500/50 p-2 has-[:focus]:border-neutral-500">
                 <TextArea
                   id="prompt"
