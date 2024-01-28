@@ -12,6 +12,12 @@ code {
   font-weight: bold;
 }
 
-.prose ol li {
+.prose ol,
+.prose ul {
+  margin-top: 1rem;
+}
+
+.prose ol li,
+.prose ul li {
   margin-bottom: 1rem;
 }

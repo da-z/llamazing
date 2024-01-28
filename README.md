@@ -3,7 +3,7 @@
 A simple frontend to Ollama.
 
 | Light Theme               | Dark Theme               |
-|---------------------------|--------------------------|
+| ------------------------- | ------------------------ |
 | ![](screenshot-light.png) | ![](screenshot-dark.png) |
 
 ## Install
