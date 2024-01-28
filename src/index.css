@@ -2,6 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-.prose > ol > li {
-  margin-bottom: 1rem;
+html {
+  font-size: 0.85rem;
 }

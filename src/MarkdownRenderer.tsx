@@ -5,24 +5,25 @@ import copy from "clipboard-copy";
 import { Button } from "./rac/Button.tsx";
 import remarkMath from "remark-math";
 import remarkGfm from "remark-gfm";
-import { atomDark as style } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import { Clipboard, ClipboardCheck } from "lucide-react";
 import rehypeMathjax from "rehype-mathjax";
 import { Tooltip } from "./rac/Tooltip.tsx";
 import { TooltipTrigger } from "react-aria-components";
+import { dracula } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 interface CodeBlockProps {
   language: string;
   value: string;
+  style?: { [key: string]: React.CSSProperties };
 }
 
 interface CodeProps {
-  inline?: boolean;
   className?: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
+  style?: { [key: string]: React.CSSProperties };
 }
 
-const CodeBlock: React.FC<CodeBlockProps> = ({ language, value }) => {
+const CodeBlock: React.FC<CodeBlockProps> = ({ language, value, style }) => {
   const [copied, setCopied] = React.useState(false);
 
   const handleCopyClick = async () => {
@@ -31,14 +32,14 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ language, value }) => {
     setTimeout(() => setCopied(false), 1000);
   };
 
-  const syntaxHighlighterStyle = {
+  const customSyntaxHighlighterStyle = {
     borderRadius: "0.4rem",
     fontSize: "0.7rem",
     minHeight: "2.6rem",
   } as React.CSSProperties;
 
   return (
-    <div className="group relative">
+    <div className="group relative mt-2">
       <TooltipTrigger delay={500} closeDelay={10}>
         <Button
           className="absolute right-2 top-2 bg-gray-800 p-1 text-white opacity-0 group-hover:opacity-100"
@@ -53,10 +54,14 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ language, value }) => {
         <Tooltip>Copy</Tooltip>
       </TooltipTrigger>
 
+      <span className="absolute bottom-2 right-2 text-xs text-white/20 opacity-100 group-hover:opacity-0">
+        {language}
+      </span>
+
       <SyntaxHighlighter
         language={language}
         style={style}
-        customStyle={syntaxHighlighterStyle}
+        customStyle={customSyntaxHighlighterStyle}
       >
         {value}
       </SyntaxHighlighter>
@@ -66,17 +71,21 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ language, value }) => {
 
 interface MarkdownRendererProps {
   content: string;
+  style?: { [key: string]: React.CSSProperties };
 }
 
-const Code: React.FC<CodeProps> = ({ inline, className, children }) => {
+const Code: React.FC<CodeProps> = ({ className, children, style }) => {
   const match = /language-(\w+)/.exec(className || "");
-  return !inline && match ? (
+  return match ? (
     <CodeBlock
       language={match[1]}
       value={String(children).replace(/\n$/, "")}
+      style={style}
     />
   ) : (
-    <code className={className}>{children}</code>
+    <code className={className} style={style}>
+      {children}
+    </code>
   );
 };
 
@@ -87,7 +96,7 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
       rehypePlugins={[rehypeMathjax]}
       children={content}
       components={{
-        code: Code,
+        code: (props) => <Code {...props} style={dracula} />,
       }}
     />
   );

@@ -77,22 +77,19 @@ function App() {
 
   return (
     <div className="flex h-screen bg-neutral-800 font-sans text-white">
-      <aside className="relative hidden h-screen w-0 flex-col p-4 py-2 md:flex md:w-[300px]">
+      <aside className="relative hidden h-screen w-0 flex-col p-4 py-2 md:flex md:w-[350px]">
         <h1 className="mx-auto mt-4 flex select-none gap-2 text-3xl">
           <Bot size="32" /> LLaMazing
         </h1>
 
-        <div className="mb-2 mt-8 flex select-none items-center gap-2">
-          <Globe
-            className="mt-0.5 rounded bg-blue-400 p-[6px] text-blue-900"
-            size="30"
-          />
+        <div className="mt-8 flex select-none items-center">
+          <Globe className="mt-0.5 rounded p-[6px] text-blue-400" size="30" />
           <Label className="">System Prompt:</Label>
         </div>
         <TextArea
           id="system-prompt"
           aria-label="system-prompt"
-          className="mt-2 h-32 rounded-xl border-2 border-neutral-400/40 bg-neutral-800 p-4 text-sm text-neutral-200 outline-none focus:border-neutral-400"
+          className="mt-2 h-32 rounded-xl border-2 border-neutral-400/40 bg-neutral-800 p-4 text-[0.9rem] text-neutral-200 outline-none focus:border-neutral-400"
           value={systemPrompt}
           onChange={(e) => setSystemPrompt(e.target.value)}
         />
@@ -110,12 +107,12 @@ function App() {
         </div>
       </aside>
 
-      <main className="flex-1">
-        <div className="relative m-auto flex h-full flex-col gap-2 bg-neutral-700 px-10 pb-40 pt-20">
-          <div className="mt-4 grid grid-cols-[auto_minmax(0,_1fr)] gap-4 overflow-y-auto">
+      <main className="flex-1 bg-neutral-700 px-20 py-4">
+        <div className="relative m-auto flex h-full flex-col gap-2 px-8 pb-40 pt-20">
+          <div className="mt-4 grid grid-cols-[auto_minmax(0,_1fr)] gap-x-4 gap-y-10 overflow-y-auto">
             <Bot
               className="rounded bg-yellow-400 p-[4px] text-yellow-900"
-              size="30"
+              size="32"
             />
             <div className="mt-[3px] flex flex-col gap-2 pr-8">
               How may I help you?
@@ -127,13 +124,13 @@ function App() {
                     user: (
                       <CircleUserRound
                         className="rounded bg-orange-400 p-[6px] text-orange-900"
-                        size="30"
+                        size="32"
                       />
                     ),
                     assistant: (
                       <Bot
                         className="rounded bg-yellow-400 p-[4px] text-yellow-900"
-                        size="30"
+                        size="32"
                       />
                     ),
                   }[m.role]
@@ -147,7 +144,7 @@ function App() {
               <>
                 <Bot
                   className="rounded bg-yellow-400 p-[4px] text-yellow-900"
-                  size="30"
+                  size="32"
                 />
                 <div className="prose mt-[3px] flex flex-col gap-2 pr-8">
                   <MarkdownRenderer content={response + "▌"} />
@@ -163,7 +160,7 @@ function App() {
               <TextArea
                 id="prompt"
                 aria-label="prompt"
-                className="mr-2 w-full resize-none bg-transparent p-2 text-white"
+                className="mr-2 w-full resize-none bg-transparent p-2 text-[0.95rem] text-white outline-none"
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 onKeyDown={handleKeyDown}

@@ -1,17 +1,12 @@
-html {
-  font-size: 0.85rem;
-}
-
 code {
   font-size: 0.85rem !important;
   font-family: "IBM Plex Mono", monospace !important;
 }
 
 p code {
-  color: rgb(168, 255, 96);
+  color: rgb(80, 250, 123);
 }
 
-#prompt {
-  font-size: 0.9rem;
-  outline: none;
+.prose > ol > li {
+  margin-bottom: 1rem;
 }
