@@ -24,7 +24,7 @@ function App() {
     (async () => {
       const _models = (await ollama.list()).models.map((m) => m.name);
       setModels(_models);
-      if (!model && _models.length) {
+      if (_models.length) {
         setModel(_models[0]);
       }
     })();
@@ -175,7 +175,7 @@ function App() {
               />
               <TooltipTrigger delay={750} closeDelay={10}>
                 <Button
-                  isDisabled={canSubmit()}
+                  isDisabled={!canSubmit()}
                   className={`${canSubmit() ? "bg-black hover:cursor-pointer hover:bg-neutral-800" : "bg-neutral-500 hover:bg-neutral-200"}`}
                   onPress={submit}
                 >
