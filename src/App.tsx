@@ -24,28 +24,26 @@ function App() {
     (async () => {
       const _models = (await ollama.list()).models.map((m) => m.name);
       setModels(_models);
-      if (_models.length) {
+      if (!model && _models.length) {
         setModel(_models[0]);
       }
     })();
   }, []);
 
   const chat = async (message: string) => {
-    const newMessages = [
-      { role: "system", content: systemPrompt },
-      ...messages,
-      { role: "user", content: message },
-    ];
-
     setMessages((prev) => [...prev, { role: "user", content: message }]);
-
     setResponse(" ");
+
     const res = await ollama.chat({
       model,
-      messages: newMessages,
+      messages: [
+        { role: "system", content: systemPrompt },
+        ...messages,
+        { role: "user", content: message },
+      ],
       stream: true,
       options: {
-        stop: ["<|im_start|>", "<|im_end|>", "<s>", "</s>"],
+        stop: ["<|im_start|>", "<|im_end|>", "<s>", "</s>", "<|system|>"],
         // temperature: 0.5,
         // num_ctx: 2048,
       },
@@ -71,14 +69,22 @@ function App() {
   const handleKeyDown = async (e: KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      await submit();
+      if (canSubmit()) {
+        await submit();
+      } else {
+        alert("Please pick a model first");
+      }
     }
   };
 
+  function canSubmit() {
+    return !!(prompt && model);
+  }
+
   return (
     <div className="flex h-screen bg-neutral-800 font-sans text-white">
-      <aside className="relative hidden h-screen w-0 flex-col p-4 py-2 md:flex md:w-[350px]">
-        <h1 className="mx-auto mt-4 flex select-none gap-2 text-3xl">
+      <aside className="relative hidden h-screen w-0 flex-col p-6 py-2 md:flex md:w-[350px]">
+        <h1 className="mx-auto mt-10 flex select-none gap-2 text-3xl">
           <Bot size="32" /> LLaMazing
         </h1>
 
@@ -107,8 +113,8 @@ function App() {
         </div>
       </aside>
 
-      <main className="flex-1 bg-neutral-700 px-20 py-4">
-        <div className="relative m-auto flex h-full flex-col gap-2 px-8 pb-40 pt-20">
+      <main className="flex-1 bg-neutral-700 px-16 py-4">
+        <div className="relative m-auto flex h-full flex-col gap-2 px-8 pb-60 pt-20">
           <div className="mt-4 grid grid-cols-[auto_minmax(0,_1fr)] gap-x-4 gap-y-10 overflow-y-auto">
             <Bot
               className="rounded bg-yellow-400 p-[4px] text-yellow-900"
@@ -169,13 +175,13 @@ function App() {
               />
               <TooltipTrigger delay={750} closeDelay={10}>
                 <Button
-                  isDisabled={!prompt || models.length == 0}
-                  className={`${prompt && models.length ? "bg-black hover:cursor-pointer hover:bg-neutral-800" : "bg-neutral-500 hover:bg-neutral-200"}`}
+                  isDisabled={canSubmit()}
+                  className={`${canSubmit() ? "bg-black hover:cursor-pointer hover:bg-neutral-800" : "bg-neutral-500 hover:bg-neutral-200"}`}
                   onPress={submit}
                 >
                   <SendHorizonal
                     size="20"
-                    className={`-rotate-90 font-bold ${prompt && models.length ? "text-white" : "text-gray-400"}`}
+                    className={`-rotate-90 font-bold ${canSubmit() ? "text-white" : "text-gray-400"}`}
                   />
                 </Button>
                 <Tooltip>Send</Tooltip>

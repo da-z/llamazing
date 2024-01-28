@@ -6,10 +6,11 @@
   "scripts": {
     "dev": "vite --open",
     "build": "tsc && vite build",
+    "preview": "vite preview",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0 --fix",
     "format": "prettier --write .",
     "check-format": "prettier --check .",
-    "preview": "vite preview"
+    "reinstall": "rm -rf node_modules; rm pnpm-lock.yaml; pnpm install"
   },
   "dependencies": {
     "@heroicons/react": "^2.1.1",
