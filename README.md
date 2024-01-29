@@ -13,7 +13,7 @@ Install [Ollama](https://ollama.ai/) and run the server.
 Download some [models](https://ollama.ai/library). For example, one of my favorites:
 
 ```shell
-$ ollama pull dolphin-mistral:7b-v2.6-dpo-laser-q6_K
+$ ollama pull dolphin-mistral
 ```
 
 Install the web ui
