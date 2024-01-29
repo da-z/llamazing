@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import copy from "clipboard-copy";
@@ -66,7 +66,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
         </TooltipTrigger>
       ) : null}
 
-      <span className="absolute bottom-2 right-2 text-xs text-black/50 opacity-100 group-hover:opacity-0 dark:text-white/50">
+      <span className="absolute bottom-2 right-2 text-xs text-black/50 dark:text-white/50">
         {language}
       </span>
 
@@ -75,7 +75,15 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
         style={theme === "dark" ? dark : light}
         customStyle={{
           ...customSyntaxHighlighterStyle,
-          ...(theme === "light" ? { backgroundColor: "#fafafa" } : {}),
+          ...(theme === "light"
+            ? {
+                border: "2px solid",
+                borderColor: "#dedede",
+              }
+            : {
+                border: "2px solid",
+                borderColor: "#545454",
+              }),
         }}
       >
         {value}
@@ -130,4 +138,11 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
   );
 };
 
-export default MarkdownRenderer;
+export const MemoizedMarkdownRenderer: React.FC<MarkdownRendererProps> = memo(
+  MarkdownRenderer,
+  (prevProps, nextProps) =>
+    prevProps.content === nextProps.content &&
+    prevProps.theme === nextProps.theme,
+);
+
+export default MemoizedMarkdownRenderer;

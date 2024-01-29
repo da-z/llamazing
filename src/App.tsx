@@ -58,12 +58,36 @@ function App() {
   useEffect(() => {
     if (autoScroll) {
       const intervalId = setInterval(
-        () => ref.current?.scrollBy({ top: 100, behavior: "smooth" }),
+        () => ref.current?.scrollBy({ top: 250, behavior: "smooth" }),
         50,
       );
       return () => clearInterval(intervalId);
     }
   }, [autoScroll]);
+
+  const onWheel = (e: React.WheelEvent<HTMLElement>) => {
+    const { current } = ref;
+
+    if (current) {
+      const isScrollingUp = e.deltaY < 0;
+      const isScrollingDown = e.deltaY > 0;
+
+      if (isScrollingUp || e.deltaX !== 0) {
+        setAutoScroll(false);
+      } else if (
+        isScrollingDown &&
+        current.scrollHeight > current.clientHeight
+      ) {
+        const isNearBottom =
+          current.scrollTop + current.clientHeight >=
+          current.scrollHeight - 300;
+
+        if (isNearBottom) {
+          setAutoScroll(true);
+        }
+      }
+    }
+  };
 
   const chat = async (message: string) => {
     setMessages((prev) => [...prev, { role: "user", content: message }]);
@@ -121,14 +145,6 @@ function App() {
   function toggleTheme() {
     setTheme(theme === "light" ? "dark" : "light");
   }
-
-  const onWheel = (e: React.WheelEvent<HTMLElement>) => {
-    if (ref.current) {
-      if (e.deltaY !== 0 || e.deltaX !== 0) {
-        setAutoScroll(false);
-      }
-    }
-  };
 
   return (
     <div className={theme}>

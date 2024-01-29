@@ -4,17 +4,19 @@ code {
 }
 
 p code {
-  border: 1px solid rgba(185, 185, 185, 0.4);
-  border-radius: 0.3rem;
-  padding: 0.1rem 0.2rem;
+  font-size: 0.82rem !important;
+  border-radius: 0.2rem;
+  padding: 0 0.2rem;
 }
 
 .dark p code {
   color: rgb(80, 250, 123);
+  border: 1px solid rgb(80, 250, 123);
 }
 
 .light p code {
-  color: rgb(34, 142, 236);
+  color: rgb(59, 120, 243);
+  border: 1px solid rgb(59, 120, 243);
   font-weight: bold;
 }
 

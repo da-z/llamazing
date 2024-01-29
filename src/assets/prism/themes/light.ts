@@ -20,8 +20,8 @@ export const light: { [key: string]: React.CSSProperties } = {
     hyphens: "none",
   },
   'pre[class*="language-"]': {
-    color: "#f8f8f2",
-    background: "#031826",
+    color: "#5d5c5c",
+    background: "#fafafa",
     fontFamily: "Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace",
     textAlign: "left",
     whiteSpace: "pre",
