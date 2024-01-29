@@ -27,9 +27,17 @@ function App() {
   const [models, setModels] = useState<string[]>([]);
   const [model, setModel] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
-  const [theme, setTheme] = useState<"dark" | "light">("dark");
+  const [theme, setTheme] = useState<"dark" | "light">();
 
   useEffect(() => {
+    if (!theme) {
+      if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+        setTheme("dark");
+      } else if (window.matchMedia("(prefers-color-scheme: light)").matches) {
+        setTheme("light");
+      }
+    }
+
     (async () => {
       const _models = (await ollama.list()).models.map((m) => m.name);
       setModels(_models);
@@ -42,7 +50,7 @@ function App() {
   useEffect(() => {
     document.body.classList.remove("dark");
     document.body.classList.remove("light");
-    document.body.classList.add(theme);
+    document.body.classList.add(theme ?? "dark");
   }, [theme]);
 
   const chat = async (message: string) => {
@@ -106,7 +114,7 @@ function App() {
         <div className="absolute right-4 top-4">
           <ToggleButton
             onChange={toggleTheme}
-            className="rounded-full border-none bg-neutral-200 p-0.5"
+            className="rounded-full border-none bg-neutral-200 p-0.5 text-neutral-600 transition hover:bg-purple-600 hover:text-white dark:bg-neutral-600 dark:text-white dark:hover:bg-yellow-300 dark:hover:text-neutral-800"
           >
             {theme === "dark" ? <SunIcon size={18} /> : <MoonIcon size={18} />}
           </ToggleButton>
