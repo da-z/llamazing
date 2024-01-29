@@ -9,8 +9,8 @@ import { Clipboard, ClipboardCheck } from "lucide-react";
 import rehypeMathjax from "rehype-mathjax";
 import { Tooltip } from "./rac/Tooltip.tsx";
 import { TooltipTrigger } from "react-aria-components";
-import * as themes from "react-syntax-highlighter/dist/esm/styles/prism";
-import { github } from "./assets/prism/themes/github.ts";
+import { light } from "./assets/prism/themes/light.ts";
+import { dark } from "./assets/prism/themes/dark.ts";
 
 interface CodeBlockProps {
   language: string;
@@ -72,7 +72,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
 
       <SyntaxHighlighter
         language={language}
-        style={theme === "dark" ? themes.dracula : github}
+        style={theme === "dark" ? dark : light}
         customStyle={{
           ...customSyntaxHighlighterStyle,
           ...(theme === "light" ? { backgroundColor: "#fafafa" } : {}),
@@ -105,10 +105,7 @@ const Code: React.FC<CodeProps> = ({
       showCopy={showCopy}
     />
   ) : (
-    <code
-      className={className}
-      style={theme === "dark" ? themes.dracula : github}
-    >
+    <code className={className} style={theme === "dark" ? dark : light}>
       {children}
     </code>
   );

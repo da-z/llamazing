@@ -1,6 +1,6 @@
 import React from "react";
 
-export const github: { [key: string]: React.CSSProperties } = {
+export const light: { [key: string]: React.CSSProperties } = {
   'code[class*="language-"]': {
     color: "#276bbb",
     background: "none",
@@ -47,7 +47,7 @@ export const github: { [key: string]: React.CSSProperties } = {
     whiteSpace: "normal",
   },
   comment: {
-    color: "#6272a4",
+    color: "#898eab",
   },
   prolog: {
     color: "#6272a4",
@@ -68,7 +68,7 @@ export const github: { [key: string]: React.CSSProperties } = {
     color: "#283cb4",
   },
   tag: {
-    color: "#ff79c6",
+    color: "#963b6e",
   },
   constant: {
     color: "#02172a",
@@ -123,13 +123,13 @@ export const github: { [key: string]: React.CSSProperties } = {
     color: "#3243c0",
   },
   function: {
-    color: "#92049f",
+    color: "#b90cc9",
   },
   "class-name": {
-    color: "#0b2888",
+    color: "#bd017f",
   },
   keyword: {
-    color: "#e32d8b",
+    color: "#5d1ec2",
   },
   regex: {
     color: "#092742",
