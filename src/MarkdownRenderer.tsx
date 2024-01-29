@@ -16,15 +16,22 @@ interface CodeBlockProps {
   language: string;
   value: string;
   theme?: "dark" | "light";
+  showCopy?: boolean;
 }
 
 interface CodeProps {
   className?: string;
   children?: React.ReactNode;
   theme?: "dark" | "light";
+  showCopy: boolean;
 }
 
-const CodeBlock: React.FC<CodeBlockProps> = ({ language, value, theme }) => {
+const CodeBlock: React.FC<CodeBlockProps> = ({
+  language,
+  value,
+  theme,
+  showCopy,
+}) => {
   const [copied, setCopied] = React.useState(false);
 
   const handleCopyClick = async () => {
@@ -43,19 +50,21 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ language, value, theme }) => {
 
   return (
     <div className="group relative">
-      <TooltipTrigger delay={500} closeDelay={10}>
-        <Button
-          className="absolute right-3 top-3 border-none bg-gray-500 p-1.5 text-white opacity-0 group-hover:opacity-100 "
-          onPress={handleCopyClick}
-        >
-          {copied ? (
-            <ClipboardCheck className="h-4 w-4" />
-          ) : (
-            <Clipboard className="h-4 w-4" />
-          )}
-        </Button>
-        <Tooltip>Copy</Tooltip>
-      </TooltipTrigger>
+      {showCopy ? (
+        <TooltipTrigger delay={500} closeDelay={10}>
+          <Button
+            className="absolute right-3 top-3 border-none bg-gray-500 p-1.5 text-white opacity-0 group-hover:opacity-100 "
+            onPress={handleCopyClick}
+          >
+            {copied ? (
+              <ClipboardCheck className="h-4 w-4" />
+            ) : (
+              <Clipboard className="h-4 w-4" />
+            )}
+          </Button>
+          <Tooltip>Copy</Tooltip>
+        </TooltipTrigger>
+      ) : null}
 
       <span className="absolute bottom-2 right-2 text-xs text-black/50 opacity-100 group-hover:opacity-0 dark:text-white/50">
         {language}
@@ -78,15 +87,22 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ language, value, theme }) => {
 interface MarkdownRendererProps {
   content: string;
   theme?: "dark" | "light";
+  showCopy?: boolean;
 }
 
-const Code: React.FC<CodeProps> = ({ className, children, theme }) => {
+const Code: React.FC<CodeProps> = ({
+  className,
+  children,
+  theme,
+  showCopy,
+}) => {
   const match = /language-(\w+)/.exec(className || "");
   return match ? (
     <CodeBlock
       language={match[1]}
       value={String(children).replace(/\n$/, "")}
       theme={theme}
+      showCopy={showCopy}
     />
   ) : (
     <code
@@ -101,6 +117,7 @@ const Code: React.FC<CodeProps> = ({ className, children, theme }) => {
 const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
   content,
   theme,
+  showCopy,
 }) => {
   return (
     <ReactMarkdown
@@ -108,7 +125,9 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
       rehypePlugins={[rehypeMathjax]}
       children={content}
       components={{
-        code: (props) => <Code {...props} theme={theme} />,
+        code: (props) => (
+          <Code {...props} theme={theme} showCopy={showCopy ?? true} />
+        ),
       }}
     />
   );

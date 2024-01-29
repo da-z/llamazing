@@ -104,7 +104,10 @@ function App() {
     <div className={theme}>
       <div className="relative flex h-screen bg-white font-sans text-gray-700 dark:bg-neutral-700 dark:text-white">
         <div className="absolute right-4 top-4">
-          <ToggleButton onChange={toggleTheme} className="border-none p-2">
+          <ToggleButton
+            onChange={toggleTheme}
+            className="rounded-full border-none bg-neutral-200 p-0.5"
+          >
             {theme === "dark" ? <SunIcon size={18} /> : <MoonIcon size={18} />}
           </ToggleButton>
         </div>
@@ -181,7 +184,11 @@ function App() {
                     size="38"
                   />
                   <div className="prose flex flex-col gap-2 pr-8">
-                    <MarkdownRenderer theme={theme} content={response + "▌"} />
+                    <MarkdownRenderer
+                      theme={theme}
+                      content={response + "▌"}
+                      showCopy={false}
+                    />
                   </div>
                 </>
               ) : (
