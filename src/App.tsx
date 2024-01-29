@@ -167,8 +167,10 @@ function App() {
               aria-label="select-model"
               onSelectionChange={(s) => setModel(String(s))}
             >
-              {models.map((m) => (
-                <ListBoxItem id={m}>{m}</ListBoxItem>
+              {models.map((m, i) => (
+                <ListBoxItem id={m} key={"model" + i}>
+                  {m}
+                </ListBoxItem>
               ))}
             </Select>
           </div>
@@ -188,7 +190,7 @@ function App() {
               <div className="mt-[7px] flex flex-col gap-2 pr-8">
                 How may I help you?
               </div>
-              {messages.map((m) => (
+              {messages.map((m, i) => (
                 <>
                   {
                     {
@@ -196,18 +198,24 @@ function App() {
                         <CircleUserRound
                           className="rounded bg-blue-400 p-[6px] text-white dark:bg-orange-400 dark:text-orange-900"
                           size="38"
+                          key={"icn" + i}
                         />
                       ),
                       assistant: (
                         <Bot
                           className="rounded bg-purple-400 p-[4px] text-white dark:bg-yellow-400 dark:text-yellow-900"
                           size="38"
+                          key={"icn" + i}
                         />
                       ),
                     }[m.role]
                   }
                   <div className="prose flex flex-col gap-2 pr-8">
-                    <MarkdownRenderer theme={theme} content={m.content} />
+                    <MarkdownRenderer
+                      theme={theme}
+                      content={m.content}
+                      key={"md" + i}
+                    />
                   </div>
                 </>
               ))}
