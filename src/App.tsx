@@ -9,6 +9,7 @@ import {
   MoonIcon,
   SendHorizonal,
   SunIcon,
+  Trash2Icon,
 } from "lucide-react";
 import MarkdownRenderer from "./MarkdownRenderer.tsx";
 import { Label } from "./rac/Field.tsx";
@@ -29,6 +30,8 @@ function App() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [theme, setTheme] = useState<"dark" | "light">();
   const [autoScroll, setAutoScroll] = useState(true);
+  const [isGenerating, setIsGenerating] = useState(false);
+  // const [stopGenerating, setStopGenerating] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -91,6 +94,8 @@ function App() {
 
   const chat = async (message: string) => {
     setMessages((prev) => [...prev, { role: "user", content: message }]);
+
+    setIsGenerating(true);
     setResponse(" ");
 
     setAutoScroll(true);
@@ -114,10 +119,15 @@ function App() {
     for await (const part of res) {
       resp += part.message.content;
       setResponse(resp);
+      // if (stopGenerating) {
+      //   setIsGenerating(false);
+      //   return;
+      // }
     }
     setResponse("");
-
     setMessages((prev) => [...prev, { role: "assistant", content: resp }]);
+
+    setIsGenerating(false);
   };
 
   const submit = async () => {
@@ -146,6 +156,10 @@ function App() {
     setTheme(theme === "light" ? "dark" : "light");
   }
 
+  function clearMessages() {
+    setMessages([]);
+  }
+
   return (
     <div className={theme}>
       <div className="relative flex h-screen bg-white font-sans text-gray-700 dark:bg-neutral-700 dark:text-white">
@@ -157,15 +171,29 @@ function App() {
             {theme === "dark" ? <SunIcon size={18} /> : <MoonIcon size={18} />}
           </ToggleButton>
         </div>
+
         <aside className="relative hidden h-screen w-0 flex-col bg-neutral-200 p-6 py-2 drop-shadow-xl dark:bg-neutral-800 md:w-[350px] lg:flex  ">
-          <h1 className="mx-auto mt-10 flex select-none gap-2 text-3xl">
+          <h1 className="mx-auto mb-6 mt-6 flex select-none gap-2 text-3xl">
             <Bot size="34" /> LLaMazing
           </h1>
 
-          <div className="mt-8 flex select-none items-center">
+          <Select
+            label="Model"
+            selectedKey={model}
+            aria-label="select-model"
+            onSelectionChange={(s) => setModel(String(s))}
+          >
+            {models.map((m, i) => (
+              <ListBoxItem id={m} key={"model" + i}>
+                {m}
+              </ListBoxItem>
+            ))}
+          </Select>
+
+          <div className="mt-4 flex select-none items-center">
             <Globe
-              className="mt-0.5 rounded p-[6px] text-blue-500 dark:text-blue-400"
-              size="34"
+              className="m-1 rounded text-blue-500 dark:text-blue-400"
+              size="20"
             />
             <Label className="text-neutral-700">System Prompt:</Label>
           </div>
@@ -178,17 +206,19 @@ function App() {
           />
 
           <div className="absolute bottom-0 left-0 w-full p-4">
-            <Select
-              selectedKey={model}
-              aria-label="select-model"
-              onSelectionChange={(s) => setModel(String(s))}
-            >
-              {models.map((m, i) => (
-                <ListBoxItem id={m} key={"model" + i}>
-                  {m}
-                </ListBoxItem>
-              ))}
-            </Select>
+            <div className="mt-4">
+              <Button
+                variant="secondary"
+                className="w-full gap-2"
+                onPressEnd={clearMessages}
+                isDisabled={isGenerating || messages.length == 0}
+              >
+                <div className="inline-flex gap-2">
+                  <Trash2Icon className="m-auto" size="16" />
+                  Clear conversation
+                </div>
+              </Button>
+            </div>
           </div>
         </aside>
 
@@ -254,7 +284,7 @@ function App() {
               )}
             </div>
 
-            <div className="absolute bottom-0 left-0 right-0 px-4 py-8">
+            <div className="absolute bottom-0 left-0 right-0 px-4 pb-3 pt-8">
               <div className="flex rounded-xl border-2 border-neutral-500/50 p-2 has-[:focus]:border-neutral-500">
                 <TextArea
                   id="prompt"
@@ -280,8 +310,11 @@ function App() {
                   <Tooltip>Send</Tooltip>
                 </TooltipTrigger>
               </div>
-              <div className="inline-flex w-full justify-center text-xs text-neutral-400 dark:text-neutral-500">
-                LLMs can make mistakes. Consider checking important information.
+              <div className="mt-2 flex flex-col gap-2">
+                <div className="inline-flex w-full justify-center text-xs text-neutral-400 dark:text-neutral-500">
+                  LLMs can make mistakes. Consider checking important
+                  information.
+                </div>
               </div>
             </div>
           </div>
