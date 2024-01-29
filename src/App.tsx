@@ -119,7 +119,7 @@ function App() {
             {theme === "dark" ? <SunIcon size={18} /> : <MoonIcon size={18} />}
           </ToggleButton>
         </div>
-        <aside className="relative hidden h-screen w-0 flex-col bg-neutral-200 p-6 py-2 drop-shadow-xl dark:bg-neutral-800 md:flex md:w-[350px]  ">
+        <aside className="relative hidden h-screen w-0 flex-col bg-neutral-200 p-6 py-2 drop-shadow-xl dark:bg-neutral-800 md:w-[350px] lg:flex  ">
           <h1 className="mx-auto mt-10 flex select-none gap-2 text-3xl">
             <Bot size="34" /> LLaMazing
           </h1>
@@ -152,7 +152,7 @@ function App() {
           </div>
         </aside>
 
-        <main className="flex-1 px-6 pt-14">
+        <main className="flex-1 pt-14 sm:px-6">
           <div className="relative m-auto flex h-full flex-col px-8 pb-60">
             <div className="grid grid-cols-[auto_minmax(0,_1fr)] gap-x-6 gap-y-4 overflow-y-auto">
               <Bot
