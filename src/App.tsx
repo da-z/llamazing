@@ -1,4 +1,4 @@
-import { KeyboardEvent, useEffect, useState } from "react";
+import React, { KeyboardEvent, useEffect, useRef, useState } from "react";
 import "./App.css";
 import { Button } from "./rac/Button.tsx";
 import ollama, { Message } from "ollama";
@@ -28,16 +28,18 @@ function App() {
   const [model, setModel] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [theme, setTheme] = useState<"dark" | "light">();
+  const [autoScroll, setAutoScroll] = useState(true);
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!theme) {
-      if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-        setTheme("dark");
-      } else if (window.matchMedia("(prefers-color-scheme: light)").matches) {
-        setTheme("light");
-      }
+    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      setTheme("dark");
+    } else if (window.matchMedia("(prefers-color-scheme: light)").matches) {
+      setTheme("light");
     }
+  }, []);
 
+  useEffect(() => {
     (async () => {
       const _models = (await ollama.list()).models.map((m) => m.name);
       setModels(_models);
@@ -53,9 +55,21 @@ function App() {
     document.body.classList.add(theme ?? "dark");
   }, [theme]);
 
+  useEffect(() => {
+    if (autoScroll) {
+      const intervalId = setInterval(
+        () => ref.current?.scrollBy({ top: 100, behavior: "smooth" }),
+        50,
+      );
+      return () => clearInterval(intervalId);
+    }
+  }, [autoScroll]);
+
   const chat = async (message: string) => {
     setMessages((prev) => [...prev, { role: "user", content: message }]);
     setResponse(" ");
+
+    setAutoScroll(true);
 
     const res = await ollama.chat({
       model,
@@ -108,6 +122,14 @@ function App() {
     setTheme(theme === "light" ? "dark" : "light");
   }
 
+  const onWheel = (e: React.WheelEvent<HTMLElement>) => {
+    if (ref.current) {
+      if (e.deltaY !== 0 || e.deltaX !== 0) {
+        setAutoScroll(false);
+      }
+    }
+  };
+
   return (
     <div className={theme}>
       <div className="relative flex h-screen bg-white font-sans text-gray-700 dark:bg-neutral-700 dark:text-white">
@@ -154,7 +176,11 @@ function App() {
 
         <main className="flex-1 pt-14 sm:px-6">
           <div className="relative m-auto flex h-full flex-col px-8 pb-60">
-            <div className="grid grid-cols-[auto_minmax(0,_1fr)] gap-x-6 gap-y-4 overflow-y-auto">
+            <div
+              className="grid grid-cols-[auto_minmax(0,_1fr)] gap-x-6 gap-y-4 overflow-y-auto"
+              ref={ref}
+              onWheel={onWheel}
+            >
               <Bot
                 className="rounded bg-purple-400 p-[4px] text-white dark:bg-yellow-400 dark:text-yellow-900"
                 size="38"
@@ -229,6 +255,9 @@ function App() {
                   </Button>
                   <Tooltip>Send</Tooltip>
                 </TooltipTrigger>
+              </div>
+              <div className="inline-flex w-full justify-center text-xs text-neutral-400 dark:text-neutral-500">
+                LLMs can make mistakes. Consider checking important information.
               </div>
             </div>
           </div>

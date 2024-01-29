@@ -13,7 +13,6 @@ code {
 }
 
 .prose pre {
-  margin-top: 1rem;
   overflow: auto !important;
 }
 
