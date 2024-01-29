@@ -163,7 +163,7 @@ function App() {
   return (
     <div className={theme}>
       <div className="relative flex h-screen bg-white font-sans text-gray-700 dark:bg-neutral-700 dark:text-white">
-        <div className="absolute right-4 top-4">
+        <div className="absolute right-4 top-4 print:hidden">
           <ToggleButton
             onChange={toggleTheme}
             className="rounded-full border-none bg-neutral-200 p-0.5 text-neutral-600 transition hover:bg-purple-600 hover:text-white dark:bg-neutral-600 dark:text-white dark:hover:bg-yellow-300 dark:hover:text-neutral-800"
@@ -284,7 +284,7 @@ function App() {
               )}
             </div>
 
-            <div className="absolute bottom-0 left-0 right-0 px-4 pb-3 pt-8">
+            <div className="absolute bottom-0 left-0 right-0 px-4 pb-3 pt-8 print:hidden">
               <div className="flex rounded-xl border-2 border-neutral-500/50 p-2 has-[:focus]:border-neutral-500">
                 <TextArea
                   id="prompt"
@@ -310,7 +310,7 @@ function App() {
                   <Tooltip>Send</Tooltip>
                 </TooltipTrigger>
               </div>
-              <div className="mt-2 flex flex-col gap-2">
+              <div className="mt-2 flex flex-col gap-2 print:hidden">
                 <div className="inline-flex w-full justify-center text-xs text-neutral-400 dark:text-neutral-500">
                   LLMs can make mistakes. Consider checking important
                   information.

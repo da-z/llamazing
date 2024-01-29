@@ -10,3 +10,9 @@ html {
   scrollbar-width: thin;
   scrollbar-color: #797979 transparent;
 }
+
+@media print {
+  * {
+    overflow: visible !important;
+  }
+}
