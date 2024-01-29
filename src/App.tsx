@@ -253,12 +253,12 @@ function App() {
                 <TooltipTrigger delay={750} closeDelay={10}>
                   <Button
                     isDisabled={!canSubmit()}
-                    className={`${canSubmit() ? "bg-black hover:cursor-pointer hover:bg-neutral-600" : "bg-neutral-500 hover:bg-neutral-500"}`}
+                    className={`${canSubmit() ? "bg-black hover:cursor-pointer" : "bg-neutral-500 hover:bg-neutral-500 dark:bg-neutral-700"}`}
                     onPress={submit}
                   >
                     <SendHorizonal
                       size="20"
-                      className={`-rotate-90 font-bold ${canSubmit() ? "text-white" : "text-gray-400"}`}
+                      className={`-rotate-90 font-bold ${canSubmit() ? "text-white" : "text-neutral-400 dark:text-neutral-600"}`}
                     />
                   </Button>
                   <Tooltip>Send</Tooltip>
