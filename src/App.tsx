@@ -223,7 +223,7 @@ function App() {
         </aside>
 
         <main className="flex-1 pt-14 sm:px-6">
-          <div className="relative m-auto flex h-full flex-col px-8 pb-60">
+          <div className="relative m-auto flex h-full flex-col px-8 pb-36">
             <div
               className="grid grid-cols-[auto_minmax(0,_1fr)] gap-x-6 gap-y-4 overflow-y-auto"
               ref={ref}
