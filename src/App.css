@@ -22,7 +22,7 @@ code {
 }
 
 .prose > p {
-  margin-top: 0.5rem;
+  margin-top: 0.2rem;
   margin-bottom: 0.5rem;
 }
 
@@ -34,7 +34,8 @@ code {
 .prose ul,
 .prose ol {
   display: block;
-  list-style: disc inside none;
+  list-style: disc;
+  padding-left: 1rem;
 }
 
 .prose ol {
