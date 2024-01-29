@@ -42,7 +42,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ language, value, theme }) => {
   } as React.CSSProperties;
 
   return (
-    <div className="group relative my-2">
+    <div className="group relative">
       <TooltipTrigger delay={500} closeDelay={10}>
         <Button
           className="absolute right-3 top-3 border-none bg-gray-500 p-1.5 text-white opacity-0 group-hover:opacity-100 "

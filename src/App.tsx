@@ -169,7 +169,7 @@ function App() {
                       ),
                     }[m.role]
                   }
-                  <div className="prose mt-[7px] flex flex-col gap-2 pr-8">
+                  <div className="prose flex flex-col gap-2 pr-8">
                     <MarkdownRenderer theme={theme} content={m.content} />
                   </div>
                 </>
@@ -180,7 +180,7 @@ function App() {
                     className="rounded bg-purple-400 p-[4px] text-white dark:bg-yellow-400 dark:text-yellow-900"
                     size="38"
                   />
-                  <div className="prose mt-[7px] flex flex-col gap-2 pr-8">
+                  <div className="prose flex flex-col gap-2 pr-8">
                     <MarkdownRenderer theme={theme} content={response + "▌"} />
                   </div>
                 </>
@@ -194,7 +194,7 @@ function App() {
                 <TextArea
                   id="prompt"
                   aria-label="prompt"
-                  className="mr-2 w-full resize-none bg-transparent p-2 text-[0.95rem] text-neutral-700 outline-none dark:text-white"
+                  className="mr-2 w-full resize-none bg-transparent p-2 text-[0.95rem] text-neutral-600 outline-none dark:text-white"
                   value={prompt}
                   onChange={(e) => setPrompt(e.target.value)}
                   onKeyDown={handleKeyDown}

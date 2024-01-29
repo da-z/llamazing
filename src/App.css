@@ -1,23 +1,74 @@
 code {
-  font-size: 0.86rem !important;
-  font-family: "IBM Plex Mono", monospace !important;
+    font-size: 0.86rem !important;
+    font-family: "IBM Plex Mono", monospace !important;
 }
 
 .dark p code {
-  color: rgb(80, 250, 123);
+    color: rgb(80, 250, 123);
 }
 
 .light p code {
-  color: rgb(34, 142, 236);
-  font-weight: bold;
+    color: rgb(34, 142, 236);
+    font-weight: bold;
 }
 
-.prose ol,
-.prose ul {
-  margin-top: 1rem;
+.prose pre {
+    margin-top: 1rem;
+    overflow: auto !important;
+}
+
+.prose p {
+    line-height: 2rem;
+}
+
+.prose > p {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
 }
 
 .prose ol li,
 .prose ul li {
-  margin-bottom: 1rem;
+    margin-top: 0.5rem;
+}
+
+.prose ul,
+.prose ol {
+    display: block;
+    list-style: disc inside none;
+}
+
+.prose ol {
+    list-style-type: decimal;
+}
+
+.prose li {
+    display: list-item;
+}
+
+.prose ul ul,
+.prose ol ul {
+    list-style-type: circle;
+    margin-left: 1rem;
+}
+
+.prose ul ul ul,
+.prose ul ol ul {
+    list-style-type: square;
+    margin-left: 1rem;
+}
+
+.prose ol ol,
+.prose ul ol {
+    list-style-type: lower-latin;
+    margin-left: 1rem;
+}
+
+.prose p mjx-container {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.prose li mjx-container {
+    display: block;
+    margin-top: 1rem;
 }

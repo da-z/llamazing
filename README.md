@@ -2,6 +2,8 @@
 
 A simple frontend to Ollama.
 
+## Note: seems to work only in Firefox for now.
+
 | Light Theme               | Dark Theme               |
 | ------------------------- | ------------------------ |
 | ![](screenshot-light.png) | ![](screenshot-dark.png) |
