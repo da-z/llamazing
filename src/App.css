@@ -4,9 +4,9 @@ code {
 }
 
 p code {
-  font-size: 1rem !important;
-  margin-left: 0.2rem;
-  margin-right: 0.2rem;
+  border: 1px solid rgba(185, 185, 185, 0.40);
+  border-radius: 0.3rem;
+  padding: 0.1rem 0.2rem;
 }
 
 .dark p code {
