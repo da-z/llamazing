@@ -1,7 +1,7 @@
 import React, { KeyboardEvent, useEffect, useRef, useState } from "react";
 import "./App.css";
 import { Button } from "./rac/Button.tsx";
-import ollama, { ChatResponse, Message } from "ollama";
+import ollama, { ChatResponse, Message } from "./ollama";
 import {
   Bot,
   ChevronLeftIcon,
