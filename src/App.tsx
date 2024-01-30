@@ -122,6 +122,17 @@ function App() {
     }
   };
 
+  const utcDateFormatter = new Intl.DateTimeFormat("en-US", {
+    dateStyle: "full",
+    timeStyle: "long",
+    timeZone: "utc",
+  });
+
+  const localDateFormatter = new Intl.DateTimeFormat("en-US", {
+    dateStyle: "full",
+    timeStyle: "long",
+  });
+
   const chat = async (message: string) => {
     setMessages((prev) => [...prev, { role: "user", content: message }]);
 
@@ -132,10 +143,15 @@ function App() {
 
     setAutoScroll(true);
 
+    const now = new Date();
+
     const res = await ollama.chat({
       model,
       messages: [
-        { role: "system", content: systemPrompt },
+        {
+          role: "system",
+          content: `Current date and time (UTC): ${utcDateFormatter.format(now)}\nCurrent date and time (${Intl.DateTimeFormat().resolvedOptions().timeZone}): ${localDateFormatter.format(now)}\n\n${systemPrompt}`,
+        },
         ...messages,
         { role: "user", content: message },
       ],
