@@ -10,6 +10,7 @@ import {
   SendHorizonal,
   StopCircleIcon,
   SunIcon,
+  SunMoonIcon,
   Trash2Icon,
 } from "lucide-react";
 import MarkdownRenderer from "./MarkdownRenderer.tsx";
@@ -32,7 +33,10 @@ function App() {
   const [messages, setMessages] = useState<
     (Message & { context?: Partial<ChatResponse> })[]
   >([]);
-  const [theme, setTheme] = useState<"dark" | "light">();
+  const [currentTheme, setCurrentTheme] = useState<"dark" | "light">();
+  const [themePreference, setThemePreference] = useLocalStorageState<
+    "dark" | "light" | "system"
+  >("theme", "system");
   const [autoScroll, setAutoScroll] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
   const stopGeneratingRef = useRef<boolean>(false);
@@ -40,25 +44,43 @@ function App() {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-      setTheme("dark");
-    } else if (window.matchMedia("(prefers-color-scheme: light)").matches) {
-      setTheme("light");
-    }
-  }, []);
-
-  useEffect(() => {
     (async () => {
-      const _models = (await ollama.list()).models.map((m) => m.name);
-      setModels(_models);
+      setModels((await ollama.list()).models.map((m) => m.name));
     })();
   }, []);
 
+  function getSystemThemePreference() {
+    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      return "dark";
+    } else if (window.matchMedia("(prefers-color-scheme: light)").matches) {
+      return "light";
+    }
+  }
+
   useEffect(() => {
-    document.body.classList.remove("dark");
-    document.body.classList.remove("light");
-    document.body.classList.add(theme ?? "dark");
-  }, [theme]);
+    if (currentTheme) {
+      document.body.classList.remove("dark", "light");
+      document.body.classList.add(currentTheme);
+    }
+  }, [currentTheme]);
+
+  useEffect(() => {
+    if (themePreference === "system") {
+      setCurrentTheme(getSystemThemePreference());
+    } else {
+      setCurrentTheme(themePreference);
+    }
+  }, [themePreference]);
+
+  function toggleThemePreference() {
+    if (themePreference === "system") {
+      setThemePreference("light");
+    } else if (themePreference === "light") {
+      setThemePreference("dark");
+    } else if (themePreference === "dark") {
+      setThemePreference("system");
+    }
+  }
 
   useEffect(() => {
     if (autoScroll) {
@@ -185,10 +207,6 @@ function App() {
     return !isGenerating && prompt && model;
   }
 
-  function toggleTheme() {
-    setTheme(theme === "light" ? "dark" : "light");
-  }
-
   function clearMessages() {
     setMessages([]);
   }
@@ -202,14 +220,20 @@ function App() {
   }
 
   return (
-    <div className={theme}>
+    <div className={currentTheme}>
       <div className="relative flex h-screen bg-white font-sans text-gray-700 dark:bg-neutral-700 dark:text-white">
         <div className="absolute right-4 top-4 print:hidden">
           <ToggleButton
-            onChange={toggleTheme}
+            onChange={toggleThemePreference}
             className="rounded-full border-none bg-neutral-200 p-0.5 text-neutral-600 transition hover:bg-purple-600 hover:text-white dark:bg-neutral-600 dark:text-white dark:hover:bg-yellow-300 dark:hover:text-neutral-800"
           >
-            {theme === "dark" ? <SunIcon size={18} /> : <MoonIcon size={18} />}
+            {themePreference === "system" ? (
+              <SunMoonIcon size={18} />
+            ) : themePreference === "light" ? (
+              <SunIcon size={18} />
+            ) : (
+              <MoonIcon size={18} />
+            )}
           </ToggleButton>
         </div>
 
@@ -299,7 +323,7 @@ function App() {
                   }
                   <div className="prose flex flex-col gap-2 pr-8">
                     <MarkdownRenderer
-                      theme={theme}
+                      theme={currentTheme}
                       content={m.content}
                       key={"md" + i}
                     />
@@ -314,7 +338,7 @@ function App() {
                   />
                   <div className="prose flex flex-col gap-2 pr-8">
                     <MarkdownRenderer
-                      theme={theme}
+                      theme={currentTheme}
                       content={response + "▌"}
                       showCopy={false}
                     />
