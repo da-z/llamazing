@@ -12,7 +12,7 @@ export interface ButtonProps extends RACButtonProps {
 
 const button = tv({
   extend: focusRing,
-  base: "px-5 py-2 text-sm text-center transition rounded-lg border border-black/10 dark:border-white/10 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)] dark:shadow-none cursor-default",
+  base: "px-5 py-2 text-sm text-center transition rounded-lg border border-black/10 dark:border-white/10 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)] dark:shadow-none cursor-pointer",
   variants: {
     variant: {
       primary: "bg-blue-600 hover:bg-blue-700 pressed:bg-blue-800 text-white",
@@ -22,7 +22,7 @@ const button = tv({
       icon: "border-0 p-1 flex items-center justify-center text-gray-600 hover:bg-black/[5%] pressed:bg-black/10 dark:text-zinc-400 dark:hover:bg-white/10 dark:pressed:bg-white/20 disabled:bg-transparent",
     },
     isDisabled: {
-      true: "bg-gray-100 dark:bg-zinc-800 text-gray-300 dark:text-zinc-600 forced-colors:text-[GrayText] border-black/5 dark:border-white/5 dark:hover:bg-transparent hover:bg-gray-100 hover:text-neutral-300",
+      true: "bg-gray-100 dark:bg-zinc-800 text-gray-300 dark:text-zinc-600 forced-colors:text-[GrayText] border-black/5 dark:border-white/5 dark:hover:bg-transparent hover:bg-gray-100 hover:text-neutral-300 cursor-default",
     },
   },
   defaultVariants: {

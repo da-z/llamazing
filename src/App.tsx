@@ -19,6 +19,7 @@ import { TextArea, TooltipTrigger } from "react-aria-components";
 import { Select } from "./rac/Select.tsx";
 import { ListBoxItem } from "./rac/ListBox.tsx";
 import { ToggleButton } from "./rac/ToggleButton.tsx";
+import useLocalStorageState from "./hooks.ts";
 
 function App() {
   const [prompt, setPrompt] = useState(``);
@@ -27,7 +28,7 @@ function App() {
   );
   const [response, setResponse] = useState("");
   const [models, setModels] = useState<string[]>([]);
-  const [model, setModel] = useState("");
+  const [model, setModel] = useLocalStorageState("mode", "");
   const [messages, setMessages] = useState<
     (Message & { context?: Partial<ChatResponse> })[]
   >([]);
@@ -50,11 +51,11 @@ function App() {
     (async () => {
       const _models = (await ollama.list()).models.map((m) => m.name);
       setModels(_models);
-      if (_models.length) {
+      if (!model && _models.length) {
         setModel(_models[0]);
       }
     })();
-  }, []);
+  }, [model]);
 
   useEffect(() => {
     document.body.classList.remove("dark");
@@ -233,7 +234,7 @@ function App() {
             <div className="mt-4">
               <Button
                 variant="secondary"
-                className="w-full gap-2"
+                className={`w-full gap-2`}
                 onPressEnd={clearMessages}
                 isDisabled={isGenerating || messages.length == 0}
               >
@@ -324,10 +325,10 @@ function App() {
                 {showStopButton() ? (
                   <TooltipTrigger delay={750} closeDelay={10}>
                     <Button
-                      className="bg-black hover:cursor-pointer"
+                      className="bg-black"
                       onPress={() => (stopGeneratingRef.current = true)}
                     >
-                      <StopCircleIcon size="20" />
+                      <StopCircleIcon className="p-0" size="28" />
                     </Button>
                     <Tooltip>Stop</Tooltip>
                   </TooltipTrigger>
@@ -335,11 +336,11 @@ function App() {
                   <TooltipTrigger delay={750} closeDelay={10}>
                     <Button
                       isDisabled={!canSubmit()}
-                      className={`${canSubmit() ? "bg-black hover:cursor-pointer" : "bg-neutral-500 hover:bg-neutral-500 dark:bg-neutral-700"}`}
+                      className={`${canSubmit() ? "bg-black" : "bg-neutral-500 hover:bg-neutral-500 dark:bg-neutral-700"}`}
                       onPress={submit}
                     >
                       <SendHorizonal
-                        size="20"
+                        size="28"
                         className={`-rotate-90 font-bold ${canSubmit() ? "text-white" : "text-neutral-400 dark:text-neutral-600"}`}
                       />
                     </Button>

@@ -36,7 +36,7 @@ export function ListBox<T extends object>({
 // eslint-disable-next-line react-refresh/only-export-components
 export const itemStyles = tv({
   extend: focusRing,
-  base: "group relative flex items-center gap-8 cursor-default select-none py-1.5 px-2.5 rounded-md will-change-transform text-sm forced-color-adjust-none",
+  base: "group relative flex items-center gap-8 cursor-pointer select-none py-1.5 px-2.5 rounded-md will-change-transform text-sm forced-color-adjust-none",
   variants: {
     isSelected: {
       false:
@@ -44,7 +44,7 @@ export const itemStyles = tv({
       true: "bg-blue-600 text-white forced-colors:bg-[Highlight] forced-colors:text-[HighlightText] [&:has(+[data-selected])]:rounded-b-none [&+[data-selected]]:rounded-t-none -outline-offset-4 outline-white dark:outline-white forced-colors:outline-[HighlightText]",
     },
     isDisabled: {
-      true: "text-slate-300 dark:text-zinc-600 forced-colors:text-[GrayText]",
+      true: "text-slate-300 dark:text-zinc-600 forced-colors:text-[GrayText] cursor-default",
     },
   },
 });
@@ -67,11 +67,11 @@ export function ListBoxItem(props: ListBoxItemProps) {
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const dropdownItemStyles = tv({
-  base: "group flex items-center gap-4 cursor-default select-none py-2 pl-3 pr-1 rounded-lg outline outline-0 text-sm forced-color-adjust-none",
+  base: "group flex items-center gap-4 cursor-pointer select-none py-2 pl-3 pr-1 rounded-lg outline outline-0 text-sm forced-color-adjust-none",
   variants: {
     isDisabled: {
       false: "text-gray-900 dark:text-zinc-100",
-      true: "text-gray-300 dark:text-zinc-600 forced-colors:text-[GrayText]",
+      true: "text-gray-300 dark:text-zinc-600 forced-colors:text-[GrayText] cursor-default",
     },
     isFocused: {
       true: "bg-blue-600 text-white forced-colors:bg-[Highlight] forced-colors:text-[HighlightText]",
