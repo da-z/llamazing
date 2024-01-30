@@ -47,7 +47,8 @@ function App() {
   );
   const stopGeneratingRef = useRef<boolean>(false);
 
-  const ref = useRef<HTMLDivElement>(null);
+  const chatAreaRef = useRef<HTMLDivElement>(null);
+  const promptRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     (async () => {
@@ -91,7 +92,7 @@ function App() {
   useEffect(() => {
     if (autoScroll) {
       const intervalId = setInterval(
-        () => ref.current?.scrollBy({ top: 9999, behavior: "smooth" }),
+        () => chatAreaRef.current?.scrollBy({ top: 9999, behavior: "smooth" }),
         50,
       );
       return () => clearInterval(intervalId);
@@ -99,7 +100,7 @@ function App() {
   }, [autoScroll]);
 
   const onWheel = (e: React.WheelEvent<HTMLElement>) => {
-    const { current } = ref;
+    const { current } = chatAreaRef;
 
     if (current) {
       const isScrollingUp = e.deltaY < 0;
@@ -231,6 +232,7 @@ function App() {
 
   function clearMessages() {
     setMessages([]);
+    promptRef.current?.focus();
   }
 
   function showStopButton() {
@@ -350,7 +352,7 @@ function App() {
           <div className="relative m-auto flex h-full flex-col px-8 pb-36">
             <div
               className="grid grid-cols-[auto_minmax(0,_1fr)] gap-x-6 gap-y-4 overflow-y-auto"
-              ref={ref}
+              ref={chatAreaRef}
               onWheel={onWheel}
             >
               <Bot
@@ -418,6 +420,7 @@ function App() {
                   onChange={(e) => setPrompt(e.target.value)}
                   onKeyDown={handleKeyDownOnPrompt}
                   autoFocus
+                  ref={promptRef}
                   placeholder="Your message here..."
                 />
 
