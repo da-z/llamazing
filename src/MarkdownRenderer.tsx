@@ -107,7 +107,7 @@ const Code: React.FC<CodeProps> = ({
   const match = /language-(\w+)/.exec(className || "");
   return match ? (
     <CodeBlock
-      language={match[1]}
+      language={match[1].toLowerCase()}
       value={String(children).replace(/\n$/, "")}
       theme={theme}
       showCopy={showCopy}
