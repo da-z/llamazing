@@ -266,7 +266,7 @@ function App() {
           <TooltipTrigger delay={400} closeDelay={50}>
             <ToggleButton
               onChange={toggleThemePreference}
-              className="rounded-full border-none bg-neutral-200 p-1 text-neutral-600 transition hover:bg-purple-600
+              className="rounded-full border-none bg-neutral-200 p-1 text-neutral-600 transition-none hover:bg-purple-600
                          hover:text-white dark:bg-neutral-600 dark:text-white dark:hover:bg-yellow-300
                          dark:hover:text-neutral-800"
             >
