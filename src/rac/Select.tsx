@@ -17,7 +17,7 @@ import { composeTailwindRenderProps, focusRing } from "./utils";
 
 const styles = tv({
   extend: focusRing,
-  base: "flex items-center text-start gap-4 w-full cursor-pointer border border-black/10 dark:border-white/10 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)] dark:shadow-none rounded-lg pl-3 pr-2 py-2 min-w-[150px] bg-gray-50 dark:bg-zinc-700",
+  base: "flex items-center text-start gap-4 w-full cursor-pointer border border-black/20 dark:border-white/20 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)] dark:shadow-none rounded-lg pl-3 pr-2 py-2 min-w-[150px] bg-gray-50 dark:bg-zinc-700",
   variants: {
     isDisabled: {
       false:
@@ -62,7 +62,7 @@ export function Select<T extends object>({
       </Button>
       {description && <Description>{description}</Description>}
       <FieldError>{errorMessage}</FieldError>
-      <Popover className="min-w-[--trigger-width]">
+      <Popover className="min-w-[--trigger-width] border border-black/20 dark:border-white/20">
         <ListBox
           items={items}
           className="max-h-[inherit] overflow-auto p-1 outline-none [clip-path:inset(0_0_0_0_round_.75rem)]"

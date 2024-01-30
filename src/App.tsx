@@ -23,11 +23,19 @@ import { Select } from "./rac/Select.tsx";
 import { ListBoxItem } from "./rac/ListBox.tsx";
 import { ToggleButton } from "./rac/ToggleButton.tsx";
 import useLocalStorageState from "./hooks.ts";
+import { Checkbox } from "./rac/Checkbox.tsx";
+
+const DEFAULT_PROMPT = `You are a helpful AI assistant trained on a vast amount of human knowledge. Answer as concisely as possible.`;
 
 function App() {
   const [prompt, setPrompt] = useState(``);
-  const [systemPrompt, setSystemPrompt] = useState(
-    `You are a helpful AI assistant trained on a vast amount of human knowledge. Answer as concisely as possible.`,
+  const [systemPrompt, setSystemPrompt] = useLocalStorageState(
+    "systemPrompt",
+    DEFAULT_PROMPT,
+  );
+  const [systemPromptEnabled, setSystemPromptEnabled] = useLocalStorageState(
+    "systemPromptEnabled",
+    true,
   );
   const [response, setResponse] = useState("");
   const [models, setModels] = useState<string[]>([]);
@@ -154,8 +162,8 @@ function App() {
           content: `
           Current date and time (UTC): ${utcDateFormatter.format(now)}
           Current date and time (${Intl.DateTimeFormat().resolvedOptions().timeZone}): ${localDateFormatter.format(now)}
-          Always wrap code in code fence blocks and wrap pseudocode in \`\`\`pseudocode \`\`\` code fence block.
-          ${systemPrompt}`.trim(),
+          *ALWAYS* begin code with \`\`\` and pseudocode with \`\`\`pseudocode \`\`\` code fence.
+          ${systemPromptEnabled ? systemPrompt : ""}`.trim(),
         },
         ...messages,
         { role: "user", content: message },
@@ -258,7 +266,9 @@ function App() {
           <TooltipTrigger delay={400} closeDelay={50}>
             <ToggleButton
               onChange={toggleThemePreference}
-              className="rounded-full border-none bg-neutral-200 p-1 text-neutral-600 transition hover:bg-purple-600 hover:text-white dark:bg-neutral-600 dark:text-white dark:hover:bg-yellow-300 dark:hover:text-neutral-800"
+              className="rounded-full border-none bg-neutral-200 p-1 text-neutral-600 transition hover:bg-purple-600
+                         hover:text-white dark:bg-neutral-600 dark:text-white dark:hover:bg-yellow-300
+                         dark:hover:text-neutral-800"
             >
               {themePreference === "system" ? (
                 <SunMoonIcon size={18} />
@@ -280,7 +290,9 @@ function App() {
 
         <ToggleButton
           onPressEnd={toggleSidePanel}
-          className="absolute left-4 top-4 hidden rounded-full border-none bg-neutral-100 p-0.5 text-neutral-300 transition-none hover:bg-neutral-100 hover:text-neutral-400 dark:bg-neutral-800 dark:text-neutral-600 hover:dark:bg-neutral-600 hover:dark:text-neutral-400 lg:block"
+          className="absolute left-4 top-4 hidden rounded-full border-none bg-neutral-100 p-0.5 text-neutral-300
+                     transition-none hover:bg-neutral-100 hover:text-neutral-400 dark:bg-neutral-800
+                     dark:text-neutral-600 hover:dark:bg-neutral-600 hover:dark:text-neutral-400 lg:block"
         >
           {showSidePanel ? (
             <ChevronLeftIcon size="24" strokeWidth="3"></ChevronLeftIcon>
@@ -319,20 +331,40 @@ function App() {
               ))}
             </Select>
 
-            <div className="mt-4 flex select-none items-center">
+            <div className="relative mt-4 flex select-none items-center">
               <Globe
                 className="m-1 rounded text-blue-500 dark:text-blue-400"
                 size="20"
               />
               <Label className="text-neutral-700">System Prompt:</Label>
+              {systemPromptEnabled && systemPrompt != DEFAULT_PROMPT ? (
+                <span
+                  className="absolute right-1 top-1 rounded bg-neutral-400 p-0.5 px-2 text-xs
+                             text-white hover:bg-neutral-500 dark:bg-neutral-700 hover:dark:bg-neutral-600"
+                  onClick={() => setSystemPrompt(DEFAULT_PROMPT)}
+                >
+                  reset
+                </span>
+              ) : null}
             </div>
-            <TextArea
-              id="system-prompt"
-              aria-label="system-prompt"
-              className="mt-2 h-32 rounded-xl border-2 border-neutral-300 p-4 text-[0.9rem] outline-none focus:border-neutral-400 dark:border-neutral-400/40 dark:bg-neutral-800 dark:text-neutral-200 dark:focus:border-neutral-500"
-              value={systemPrompt}
-              onChange={(e) => setSystemPrompt(e.target.value)}
-            />
+            <div className="relative w-auto w-full">
+              <TextArea
+                id="system-prompt"
+                aria-label="system-prompt"
+                disabled={!systemPromptEnabled}
+                className="mt-2 h-32 w-full rounded-xl border border-neutral-300 p-4 pr-8 text-[0.9rem]
+                           outline-none focus:border-neutral-400 disabled:resize-none disabled:text-neutral-300
+                           dark:border-neutral-400/40 dark:bg-neutral-800 dark:text-neutral-200
+                           dark:focus:border-neutral-500 dark:disabled:border-neutral-700/50 dark:disabled:text-neutral-600"
+                value={systemPrompt}
+                onChange={(e) => setSystemPrompt(e.target.value)}
+              />
+              <Checkbox
+                isSelected={systemPromptEnabled}
+                onChange={setSystemPromptEnabled}
+                className="absolute bottom-3 right-3"
+              ></Checkbox>
+            </div>
 
             <div className="absolute bottom-0 left-0 w-full p-4">
               <div className="mt-4">
@@ -387,7 +419,8 @@ function App() {
                     }[m.role]
                   }
                   <div
-                    className={`prose flex flex-col gap-2 pr-8 ${m.role === "user" ? "-ml-3 mr-4 rounded-[0.4rem] bg-neutral-100 pl-3 dark:bg-neutral-600" : ""}`}
+                    className={`prose flex flex-col gap-2 pr-8
+                               ${m.role === "user" ? "-ml-3 mr-4 rounded-[0.4rem] bg-neutral-100 pl-3 dark:bg-neutral-600" : ""}`}
                   >
                     <MarkdownRenderer
                       theme={currentTheme}
@@ -417,11 +450,15 @@ function App() {
             </div>
 
             <div className="absolute bottom-0 left-0 right-0 px-4 pb-3 pt-8 print:hidden">
-              <div className="flex rounded-xl border-2 border-neutral-500/50 bg-white p-2 drop-shadow-lg has-[:focus]:border-neutral-500 dark:bg-neutral-700">
+              <div
+                className="flex rounded-xl border-2 border-neutral-500/50 bg-white p-2
+                              drop-shadow-lg has-[:focus]:border-neutral-500 dark:bg-neutral-700"
+              >
                 <TextArea
                   id="prompt"
                   aria-label="prompt"
-                  className="mr-2 w-full resize-none bg-transparent p-2 text-[0.95rem] text-neutral-600 outline-none placeholder:text-neutral-400 dark:text-white"
+                  className="mr-2 w-full resize-none bg-transparent p-2 text-[0.95rem] text-neutral-600
+                            outline-none placeholder:text-neutral-400 dark:text-white"
                   value={prompt}
                   onChange={(e) => setPrompt(e.target.value)}
                   onKeyDown={handleKeyDownOnPrompt}
@@ -444,12 +481,14 @@ function App() {
                   <TooltipTrigger delay={750} closeDelay={10}>
                     <Button
                       isDisabled={!canSubmit()}
-                      className={`${canSubmit() ? "bg-black" : "bg-neutral-500 hover:bg-neutral-500 dark:bg-neutral-700"}`}
+                      className="group bg-black disabled:bg-neutral-500 disabled:hover:bg-neutral-500
+                                 disabled:dark:bg-neutral-700"
                       onPress={submit}
                     >
                       <SendHorizonal
                         size="28"
-                        className={`-rotate-90 font-bold ${canSubmit() ? "text-white" : "text-neutral-400 dark:text-neutral-600"}`}
+                        className="-rotate-90 font-bold text-white group-disabled:text-neutral-400
+                                   group-disabled:dark:text-neutral-600"
                       />
                     </Button>
                     <Tooltip>Send</Tooltip>
