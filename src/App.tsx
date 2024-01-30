@@ -151,7 +151,11 @@ function App() {
       messages: [
         {
           role: "system",
-          content: `Current date and time (UTC): ${utcDateFormatter.format(now)}\nCurrent date and time (${Intl.DateTimeFormat().resolvedOptions().timeZone}): ${localDateFormatter.format(now)}\n\n${systemPrompt}`,
+          content: `
+          Current date and time (UTC): ${utcDateFormatter.format(now)}
+          Current date and time (${Intl.DateTimeFormat().resolvedOptions().timeZone}): ${localDateFormatter.format(now)}
+          Always wrap code in code fence blocks and wrap pseudocode in \`\`\`pseudocode \`\`\` code fence block.
+          ${systemPrompt}`.trim(),
         },
         ...messages,
         { role: "user", content: message },
