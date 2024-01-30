@@ -4,6 +4,8 @@ import { Button } from "./rac/Button.tsx";
 import ollama, { ChatResponse, Message } from "ollama";
 import {
   Bot,
+  ChevronLeftIcon,
+  ChevronRightIcon,
   CircleUserRound,
   Globe,
   MoonIcon,
@@ -39,6 +41,10 @@ function App() {
   >("theme", "system");
   const [autoScroll, setAutoScroll] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [showSidePanel, setShowSidePanel] = useLocalStorageState(
+    "showSidePanel",
+    true,
+  );
   const stopGeneratingRef = useRef<boolean>(false);
 
   const ref = useRef<HTMLDivElement>(null);
@@ -85,7 +91,7 @@ function App() {
   useEffect(() => {
     if (autoScroll) {
       const intervalId = setInterval(
-        () => ref.current?.scrollBy({ top: 250, behavior: "smooth" }),
+        () => ref.current?.scrollBy({ top: 9999, behavior: "smooth" }),
         50,
       );
       return () => clearInterval(intervalId);
@@ -107,7 +113,7 @@ function App() {
       ) {
         const isNearBottom =
           current.scrollTop + current.clientHeight >=
-          current.scrollHeight - 300;
+          current.scrollHeight - 250;
 
         if (isNearBottom) {
           setAutoScroll(true);
@@ -219,6 +225,10 @@ function App() {
     stopGeneratingRef.current = true;
   }
 
+  function toggleSidePanel() {
+    setShowSidePanel(!showSidePanel);
+  }
+
   return (
     <div className={currentTheme}>
       <div className="relative flex h-screen bg-white font-sans text-gray-700 dark:bg-neutral-700 dark:text-white">
@@ -246,55 +256,79 @@ function App() {
           </TooltipTrigger>
         </div>
 
-        <aside className="relative hidden h-screen min-h-[400px] w-0 flex-col bg-neutral-200 p-6 py-2 drop-shadow-xl dark:bg-neutral-800 md:w-[350px] lg:flex  ">
-          <h1 className="mx-auto mb-6 mt-6 flex select-none gap-2 text-3xl">
-            <Bot size="34" /> LLaMazing
-          </h1>
+        <ToggleButton
+          onPressEnd={toggleSidePanel}
+          className="absolute left-4 top-4 hidden rounded-full border-none bg-neutral-100 p-0.5 text-neutral-300 transition-none hover:bg-neutral-100 hover:text-neutral-400 dark:bg-neutral-800 dark:text-neutral-600 hover:dark:bg-neutral-600 hover:dark:text-neutral-400 lg:block"
+        >
+          {showSidePanel ? (
+            <ChevronLeftIcon size="24"></ChevronLeftIcon>
+          ) : (
+            <ChevronRightIcon size="24"></ChevronRightIcon>
+          )}
+        </ToggleButton>
 
-          <Select
-            label="Model"
-            selectedKey={model}
-            aria-label="select-model"
-            onSelectionChange={(s) => setModel(String(s))}
-          >
-            {models.map((m, i) => (
-              <ListBoxItem id={m} key={"model" + i}>
-                {m}
-              </ListBoxItem>
-            ))}
-          </Select>
+        <div className={`${showSidePanel ? "" : "hidden"}`}>
+          <aside className="relative hidden h-screen min-h-[400px] w-0 flex-col bg-neutral-200 p-6 py-2 dark:bg-neutral-800 md:w-[350px] lg:flex">
+            <ToggleButton
+              onPressEnd={toggleSidePanel}
+              className="absolute right-0 top-4 hidden translate-x-[50%] rounded-full border-none bg-neutral-100 p-0.5 text-neutral-300 transition-none hover:bg-neutral-100 hover:text-neutral-400 dark:bg-neutral-800 dark:text-neutral-600 hover:dark:bg-neutral-600 hover:dark:text-neutral-400 lg:block"
+            >
+              {showSidePanel ? (
+                <ChevronLeftIcon size="24"></ChevronLeftIcon>
+              ) : (
+                <ChevronRightIcon size="24"></ChevronRightIcon>
+              )}
+            </ToggleButton>
 
-          <div className="mt-4 flex select-none items-center">
-            <Globe
-              className="m-1 rounded text-blue-500 dark:text-blue-400"
-              size="20"
-            />
-            <Label className="text-neutral-700">System Prompt:</Label>
-          </div>
-          <TextArea
-            id="system-prompt"
-            aria-label="system-prompt"
-            className="mt-2 h-32 rounded-xl border-2 border-neutral-300 p-4 text-[0.9rem] outline-none focus:border-neutral-400 dark:border-neutral-400/40 dark:bg-neutral-800 dark:text-neutral-200 dark:focus:border-neutral-500"
-            value={systemPrompt}
-            onChange={(e) => setSystemPrompt(e.target.value)}
-          />
+            <h1 className="mx-auto mb-6 mt-6 flex select-none gap-2 text-3xl">
+              <Bot size="34" /> LLaMazing
+            </h1>
 
-          <div className="absolute bottom-0 left-0 w-full p-4">
-            <div className="mt-4">
-              <Button
-                variant="secondary"
-                className={`w-full gap-2`}
-                onPressEnd={clearMessages}
-                isDisabled={isGenerating || messages.length == 0}
-              >
-                <div className="inline-flex gap-2">
-                  <Trash2Icon className="m-auto" size="16" />
-                  Clear conversation
-                </div>
-              </Button>
+            <Select
+              label="Model"
+              selectedKey={model}
+              aria-label="select-model"
+              onSelectionChange={(s) => setModel(String(s))}
+            >
+              {models.map((m, i) => (
+                <ListBoxItem id={m} key={"model" + i}>
+                  {m}
+                </ListBoxItem>
+              ))}
+            </Select>
+
+            <div className="mt-4 flex select-none items-center">
+              <Globe
+                className="m-1 rounded text-blue-500 dark:text-blue-400"
+                size="20"
+              />
+              <Label className="text-neutral-700">System Prompt:</Label>
             </div>
-          </div>
-        </aside>
+            <TextArea
+              id="system-prompt"
+              aria-label="system-prompt"
+              className="mt-2 h-32 rounded-xl border-2 border-neutral-300 p-4 text-[0.9rem] outline-none focus:border-neutral-400 dark:border-neutral-400/40 dark:bg-neutral-800 dark:text-neutral-200 dark:focus:border-neutral-500"
+              value={systemPrompt}
+              onChange={(e) => setSystemPrompt(e.target.value)}
+            />
+
+            <div className="absolute bottom-0 left-0 w-full p-4">
+              <div className="mt-4">
+                <Button
+                  variant="secondary"
+                  className={`w-full gap-2`}
+                  onPressEnd={clearMessages}
+                  isDisabled={isGenerating || messages.length == 0}
+                >
+                  <div className="inline-flex gap-2">
+                    <Trash2Icon className="m-auto" size="16" />
+                    Clear conversation
+                  </div>
+                </Button>
+              </div>
+            </div>
+          </aside>
+        </div>
 
         <main className="min-h-[400px] flex-1 pt-14 sm:px-6">
           <div className="relative m-auto flex h-full flex-col px-8 pb-36">
