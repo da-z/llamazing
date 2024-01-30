@@ -22,7 +22,7 @@ const button = tv({
       icon: "border-0 p-1 flex items-center justify-center text-gray-600 hover:bg-black/[5%] pressed:bg-black/10 dark:text-zinc-400 dark:hover:bg-white/10 dark:pressed:bg-white/20 disabled:bg-transparent",
     },
     isDisabled: {
-      true: "bg-gray-100 dark:bg-zinc-800 text-gray-300 dark:text-zinc-600 forced-colors:text-[GrayText] border-black/5 dark:border-white/5 dark:hover:bg-transparent hover:bg-gray-100 hover:text-neutral-300 cursor-default",
+      true: "bg-neutral-200 dark:bg-zinc-800 text-neutral-400 dark:text-zinc-600 forced-colors:text-[GrayText] border-black/10 dark:border-white/10 dark:hover:bg-transparent hover:bg-neutral-200 hover:text-neutral-400 cursor-default",
     },
   },
   defaultVariants: {

@@ -261,9 +261,9 @@ function App() {
           className="absolute left-4 top-4 hidden rounded-full border-none bg-neutral-100 p-0.5 text-neutral-300 transition-none hover:bg-neutral-100 hover:text-neutral-400 dark:bg-neutral-800 dark:text-neutral-600 hover:dark:bg-neutral-600 hover:dark:text-neutral-400 lg:block"
         >
           {showSidePanel ? (
-            <ChevronLeftIcon size="24"></ChevronLeftIcon>
+            <ChevronLeftIcon size="24" strokeWidth="3"></ChevronLeftIcon>
           ) : (
-            <ChevronRightIcon size="24"></ChevronRightIcon>
+            <ChevronRightIcon size="24" strokeWidth="3"></ChevronRightIcon>
           )}
         </ToggleButton>
 
@@ -271,12 +271,12 @@ function App() {
           <aside className="relative hidden h-screen min-h-[400px] w-0 flex-col bg-neutral-200 p-6 py-2 dark:bg-neutral-800 md:w-[350px] lg:flex">
             <ToggleButton
               onPressEnd={toggleSidePanel}
-              className="absolute right-0 top-4 hidden translate-x-[50%] rounded-full border-none bg-neutral-100 p-0.5 text-neutral-300 transition-none hover:bg-neutral-100 hover:text-neutral-400 dark:bg-neutral-800 dark:text-neutral-600 hover:dark:bg-neutral-600 hover:dark:text-neutral-400 lg:block"
+              className="absolute right-0 top-4 hidden translate-x-[50%] rounded-full border-none bg-white p-0.5 text-neutral-300 transition-none hover:bg-white hover:text-neutral-400 dark:bg-neutral-800 dark:text-neutral-600 hover:dark:bg-neutral-600 hover:dark:text-neutral-400 lg:block"
             >
               {showSidePanel ? (
-                <ChevronLeftIcon size="24"></ChevronLeftIcon>
+                <ChevronLeftIcon size="24" strokeWidth="3"></ChevronLeftIcon>
               ) : (
-                <ChevronRightIcon size="24"></ChevronRightIcon>
+                <ChevronRightIcon size="24" strokeWidth="3"></ChevronRightIcon>
               )}
             </ToggleButton>
 
@@ -316,11 +316,11 @@ function App() {
               <div className="mt-4">
                 <Button
                   variant="secondary"
-                  className={`w-full gap-2`}
+                  className={`w-full gap-2 pt-3`}
                   onPressEnd={clearMessages}
                   isDisabled={isGenerating || messages.length == 0}
                 >
-                  <div className="inline-flex gap-2">
+                  <div className="inline-flex items-center justify-center gap-2">
                     <Trash2Icon className="m-auto" size="16" />
                     Clear conversation
                   </div>
@@ -393,11 +393,11 @@ function App() {
             </div>
 
             <div className="absolute bottom-0 left-0 right-0 px-4 pb-3 pt-8 print:hidden">
-              <div className="flex rounded-xl border-2 border-neutral-500/50 p-2 has-[:focus]:border-neutral-500">
+              <div className="flex rounded-xl border-2 border-neutral-500/50 bg-white p-2 drop-shadow-lg has-[:focus]:border-neutral-500 dark:bg-neutral-700">
                 <TextArea
                   id="prompt"
                   aria-label="prompt"
-                  className="mr-2 w-full resize-none bg-transparent p-2 text-[0.95rem] text-neutral-600 outline-none dark:text-white"
+                  className="mr-2 w-full resize-none bg-transparent p-2 text-[0.95rem] text-neutral-600 outline-none placeholder:text-neutral-400 dark:text-white"
                   value={prompt}
                   onChange={(e) => setPrompt(e.target.value)}
                   onKeyDown={handleKeyDownOnPrompt}
