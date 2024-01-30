@@ -51,11 +51,8 @@ function App() {
     (async () => {
       const _models = (await ollama.list()).models.map((m) => m.name);
       setModels(_models);
-      if (!model && _models.length) {
-        setModel(_models[0]);
-      }
     })();
-  }, [model]);
+  }, []);
 
   useEffect(() => {
     document.body.classList.remove("dark");
@@ -158,7 +155,7 @@ function App() {
     }
   };
 
-  const handleKeyDown = async (e: KeyboardEvent) => {
+  const handleKeyDownOnPrompt = async (e: KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       if (canSubmit()) {
@@ -168,6 +165,20 @@ function App() {
       }
     }
   };
+
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if ((e.metaKey || e.ctrlKey) && e.key === "Delete") {
+        clearMessages();
+      }
+    }
+
+    document.addEventListener("keydown", handleKeyDown as never);
+
+    return function cleanup() {
+      document.removeEventListener("keydown", handleKeyDown as never);
+    };
+  }, []);
 
   function canSubmit() {
     return !isGenerating && prompt && model;
@@ -197,7 +208,7 @@ function App() {
           </ToggleButton>
         </div>
 
-        <aside className="relative hidden h-screen w-0 flex-col bg-neutral-200 p-6 py-2 drop-shadow-xl dark:bg-neutral-800 md:w-[350px] lg:flex  ">
+        <aside className="relative hidden h-screen min-h-[400px] w-0 flex-col bg-neutral-200 p-6 py-2 drop-shadow-xl dark:bg-neutral-800 md:w-[350px] lg:flex  ">
           <h1 className="mx-auto mb-6 mt-6 flex select-none gap-2 text-3xl">
             <Bot size="34" /> LLaMazing
           </h1>
@@ -247,7 +258,7 @@ function App() {
           </div>
         </aside>
 
-        <main className="flex-1 pt-14 sm:px-6">
+        <main className="min-h-[400px] flex-1 pt-14 sm:px-6">
           <div className="relative m-auto flex h-full flex-col px-8 pb-36">
             <div
               className="grid grid-cols-[auto_minmax(0,_1fr)] gap-x-6 gap-y-4 overflow-y-auto"
@@ -317,7 +328,7 @@ function App() {
                   className="mr-2 w-full resize-none bg-transparent p-2 text-[0.95rem] text-neutral-600 outline-none dark:text-white"
                   value={prompt}
                   onChange={(e) => setPrompt(e.target.value)}
-                  onKeyDown={handleKeyDown}
+                  onKeyDown={handleKeyDownOnPrompt}
                   autoFocus
                   placeholder="Your message here..."
                 />
