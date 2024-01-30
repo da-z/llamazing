@@ -162,7 +162,7 @@ function App() {
           content: `
           Current date and time (UTC): ${utcDateFormatter.format(now)}
           Current date and time (${Intl.DateTimeFormat().resolvedOptions().timeZone}): ${localDateFormatter.format(now)}
-          *ALWAYS* begin code with \`\`\` and pseudocode with \`\`\`pseudocode \`\`\` code fence.
+          If asked to write code, *ALWAYS* begin code with \`\`\` and pseudocode with \`\`\`pseudocode \`\`\` code fence.
           ${systemPromptEnabled ? systemPrompt : ""}`.trim(),
         },
         ...messages,
