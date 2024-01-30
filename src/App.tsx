@@ -386,7 +386,9 @@ function App() {
                       ),
                     }[m.role]
                   }
-                  <div className="prose flex flex-col gap-2 pr-8">
+                  <div
+                    className={`prose flex flex-col gap-2 pr-8 ${m.role === "user" ? "-ml-3 mr-4 rounded-[0.4rem] bg-neutral-100 pl-3 dark:bg-neutral-600" : ""}`}
+                  >
                     <MarkdownRenderer
                       theme={currentTheme}
                       content={m.content}
