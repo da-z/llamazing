@@ -35,7 +35,7 @@ function App() {
   );
   const [systemPromptEnabled, setSystemPromptEnabled] = useLocalStorageState(
     "systemPromptEnabled",
-    true,
+    false,
   );
   const [response, setResponse] = useState("");
   const [models, setModels] = useState<string[]>([]);
