@@ -212,7 +212,7 @@ function App() {
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
-      if ((e.metaKey || e.ctrlKey) && e.key === "Delete") {
+      if ((e.metaKey || e.ctrlKey) && ["Delete", "Backspace"].includes(e.key)) {
         stopGenerating();
         setTimeout(() => clearMessages(), 50);
       }
