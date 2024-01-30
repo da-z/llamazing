@@ -223,18 +223,27 @@ function App() {
     <div className={currentTheme}>
       <div className="relative flex h-screen bg-white font-sans text-gray-700 dark:bg-neutral-700 dark:text-white">
         <div className="absolute right-4 top-4 print:hidden">
-          <ToggleButton
-            onChange={toggleThemePreference}
-            className="rounded-full border-none bg-neutral-200 p-0.5 text-neutral-600 transition hover:bg-purple-600 hover:text-white dark:bg-neutral-600 dark:text-white dark:hover:bg-yellow-300 dark:hover:text-neutral-800"
-          >
-            {themePreference === "system" ? (
-              <SunMoonIcon size={18} />
-            ) : themePreference === "light" ? (
-              <SunIcon size={18} />
-            ) : (
-              <MoonIcon size={18} />
-            )}
-          </ToggleButton>
+          <TooltipTrigger delay={400} closeDelay={50}>
+            <ToggleButton
+              onChange={toggleThemePreference}
+              className="rounded-full border-none bg-neutral-200 p-1 text-neutral-600 transition hover:bg-purple-600 hover:text-white dark:bg-neutral-600 dark:text-white dark:hover:bg-yellow-300 dark:hover:text-neutral-800"
+            >
+              {themePreference === "system" ? (
+                <SunMoonIcon size={18} />
+              ) : themePreference === "light" ? (
+                <SunIcon size={18} />
+              ) : (
+                <MoonIcon size={18} />
+              )}
+            </ToggleButton>
+            <Tooltip>
+              {themePreference === "system"
+                ? "System"
+                : themePreference === "light"
+                  ? "Light"
+                  : "Dark"}
+            </Tooltip>
+          </TooltipTrigger>
         </div>
 
         <aside className="relative hidden h-screen min-h-[400px] w-0 flex-col bg-neutral-200 p-6 py-2 drop-shadow-xl dark:bg-neutral-800 md:w-[350px] lg:flex  ">
