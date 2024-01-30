@@ -1,13 +1,14 @@
 import React, { KeyboardEvent, useEffect, useRef, useState } from "react";
 import "./App.css";
 import { Button } from "./rac/Button.tsx";
-import ollama, { Message } from "ollama";
+import ollama, { ChatResponse, Message } from "ollama";
 import {
   Bot,
   CircleUserRound,
   Globe,
   MoonIcon,
   SendHorizonal,
+  StopCircleIcon,
   SunIcon,
   Trash2Icon,
 } from "lucide-react";
@@ -27,11 +28,14 @@ function App() {
   const [response, setResponse] = useState("");
   const [models, setModels] = useState<string[]>([]);
   const [model, setModel] = useState("");
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<
+    (Message & { context?: Partial<ChatResponse> })[]
+  >([]);
   const [theme, setTheme] = useState<"dark" | "light">();
   const [autoScroll, setAutoScroll] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
-  // const [stopGenerating, setStopGenerating] = useState(false);
+  const stopGeneratingRef = useRef<boolean>(false);
+
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -95,7 +99,9 @@ function App() {
   const chat = async (message: string) => {
     setMessages((prev) => [...prev, { role: "user", content: message }]);
 
+    stopGeneratingRef.current = false;
     setIsGenerating(true);
+
     setResponse(" ");
 
     setAutoScroll(true);
@@ -116,16 +122,31 @@ function App() {
     });
 
     let resp = "";
-    for await (const part of res) {
+
+    let part;
+
+    for await (part of res) {
+      if (stopGeneratingRef.current) {
+        setIsGenerating(false);
+        break;
+      }
+
       resp += part.message.content;
       setResponse(resp);
-      // if (stopGenerating) {
-      //   setIsGenerating(false);
-      //   return;
-      // }
     }
+
+    let context: Partial<ChatResponse> = {};
+    context = Object.assign({}, part);
+    delete context.message;
+
     setResponse("");
-    setMessages((prev) => [...prev, { role: "assistant", content: resp }]);
+
+    if (resp.trim()) {
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: resp, context },
+      ]);
+    }
 
     setIsGenerating(false);
   };
@@ -149,7 +170,7 @@ function App() {
   };
 
   function canSubmit() {
-    return !!(prompt && model);
+    return !isGenerating && prompt && model;
   }
 
   function toggleTheme() {
@@ -158,6 +179,10 @@ function App() {
 
   function clearMessages() {
     setMessages([]);
+  }
+
+  function showStopButton() {
+    return isGenerating;
   }
 
   return (
@@ -296,20 +321,34 @@ function App() {
                   autoFocus
                   placeholder="Your message here..."
                 />
-                <TooltipTrigger delay={750} closeDelay={10}>
-                  <Button
-                    isDisabled={!canSubmit()}
-                    className={`${canSubmit() ? "bg-black hover:cursor-pointer" : "bg-neutral-500 hover:bg-neutral-500 dark:bg-neutral-700"}`}
-                    onPress={submit}
-                  >
-                    <SendHorizonal
-                      size="20"
-                      className={`-rotate-90 font-bold ${canSubmit() ? "text-white" : "text-neutral-400 dark:text-neutral-600"}`}
-                    />
-                  </Button>
-                  <Tooltip>Send</Tooltip>
-                </TooltipTrigger>
+
+                {showStopButton() ? (
+                  <TooltipTrigger delay={750} closeDelay={10}>
+                    <Button
+                      className="bg-black hover:cursor-pointer"
+                      onPress={() => (stopGeneratingRef.current = true)}
+                    >
+                      <StopCircleIcon size="20" />
+                    </Button>
+                    <Tooltip>Stop</Tooltip>
+                  </TooltipTrigger>
+                ) : (
+                  <TooltipTrigger delay={750} closeDelay={10}>
+                    <Button
+                      isDisabled={!canSubmit()}
+                      className={`${canSubmit() ? "bg-black hover:cursor-pointer" : "bg-neutral-500 hover:bg-neutral-500 dark:bg-neutral-700"}`}
+                      onPress={submit}
+                    >
+                      <SendHorizonal
+                        size="20"
+                        className={`-rotate-90 font-bold ${canSubmit() ? "text-white" : "text-neutral-400 dark:text-neutral-600"}`}
+                      />
+                    </Button>
+                    <Tooltip>Send</Tooltip>
+                  </TooltipTrigger>
+                )}
               </div>
+
               <div className="mt-2 flex flex-col gap-2 print:hidden">
                 <div className="inline-flex w-full justify-center text-xs text-neutral-400 dark:text-neutral-500">
                   LLMs can make mistakes. Consider checking important
