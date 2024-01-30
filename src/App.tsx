@@ -169,7 +169,8 @@ function App() {
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       if ((e.metaKey || e.ctrlKey) && e.key === "Delete") {
-        clearMessages();
+        stopGenerating();
+        setTimeout(() => clearMessages(), 50);
       }
     }
 
@@ -194,6 +195,10 @@ function App() {
 
   function showStopButton() {
     return isGenerating;
+  }
+
+  function stopGenerating() {
+    stopGeneratingRef.current = true;
   }
 
   return (
@@ -337,7 +342,7 @@ function App() {
                   <TooltipTrigger delay={750} closeDelay={10}>
                     <Button
                       className="bg-black"
-                      onPress={() => (stopGeneratingRef.current = true)}
+                      onPress={() => stopGenerating()}
                     >
                       <StopCircleIcon className="p-0" size="28" />
                     </Button>
