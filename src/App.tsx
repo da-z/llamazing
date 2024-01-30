@@ -115,7 +115,6 @@ function App() {
       ],
       stream: true,
       options: {
-        stop: ["<|im_start|>", "<|im_end|>", "<s>", "</s>", "<|system|>"],
         // temperature: 0.5,
         // num_ctx: 2048,
       },
