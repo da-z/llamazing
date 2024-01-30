@@ -121,8 +121,7 @@ function App() {
         current.scrollHeight > current.clientHeight
       ) {
         const isNearBottom =
-          current.scrollTop + current.clientHeight >=
-          current.scrollHeight - 250;
+          current.scrollTop + current.clientHeight >= current.scrollHeight - 50;
 
         if (isNearBottom) {
           setAutoScroll(true);
@@ -160,9 +159,12 @@ function App() {
         {
           role: "system",
           content: `
-          Current date and time (UTC): ${utcDateFormatter.format(now)}
-          Current date and time (${Intl.DateTimeFormat().resolvedOptions().timeZone}): ${localDateFormatter.format(now)}
-          If asked to write code, *ALWAYS* begin code with \`\`\` If code is pseudocode begin with \`\`\`pseudocode \`\`\`.
+          ---
+          Global date and time: ${utcDateFormatter.format(now)}
+          Local date and time: ${localDateFormatter.format(now)}
+          Location: ${Intl.DateTimeFormat().resolvedOptions().timeZone}
+          ---
+          *ONLY* if asked to write code, begin code with \`\`\` and if the code is pseudocode, begin with \`\`\`pseudocode \`\`\`
           ${systemPromptEnabled ? systemPrompt : ""}`.trim(),
         },
         ...messages,
@@ -218,7 +220,9 @@ function App() {
       if (canSubmit()) {
         await submit();
       } else {
-        alert("Please pick a model first");
+        if (!model) {
+          alert("Please pick a model first");
+        }
       }
     }
   };
