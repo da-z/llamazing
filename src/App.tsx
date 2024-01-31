@@ -507,7 +507,7 @@ function App() {
                 )}
               </div>
 
-              <div className="mt-2 flex min-w-[200px] flex-col gap-2 print:hidden">
+              <div className="mt-3 flex min-w-[200px] flex-col gap-2 print:hidden">
                 <div className="inline-flex w-full justify-center text-xs text-neutral-400 dark:text-neutral-500">
                   LLMs can make mistakes. Consider checking important
                   information.
