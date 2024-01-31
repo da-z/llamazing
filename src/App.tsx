@@ -277,7 +277,7 @@ function App() {
           <TooltipTrigger delay={400} closeDelay={50}>
             <ToggleButton
               onChange={toggleThemePreference}
-              className="rounded-full border-none bg-neutral-200 p-1 text-neutral-600 transition-none hover:bg-purple-600
+              className="rounded-full border-none bg-neutral-100 p-1.5 text-neutral-500 transition-none hover:bg-purple-600
                          hover:text-white dark:bg-neutral-600 dark:text-white dark:hover:bg-yellow-300
                          dark:hover:text-neutral-800"
             >
@@ -315,7 +315,7 @@ function App() {
         <div
           className={`fixed w-full transform transition-transform duration-100 ${showSidePanel ? "-translate-x-full" : "translate-x-0"}`}
         >
-          <aside className="relative flex h-screen min-h-[400px] w-[350px] flex-col bg-neutral-200 p-6 py-2 dark:bg-neutral-800">
+          <aside className="relative flex h-screen min-h-[100vh] w-[100vw] flex-col bg-neutral-200 p-6 py-2 dark:bg-neutral-800 sm:w-[320px]">
             <h1 className="mx-auto mb-6 mt-6 flex select-none gap-2 text-3xl">
               <Bot size="34" /> LLaMazing
             </h1>
@@ -387,7 +387,7 @@ function App() {
         </div>
 
         <main
-          className={`min-h-[400px] transform pt-16 transition-transform sm:px-6 ${showSidePanel ? "w-full translate-x-0" : "w-[calc(100%_-_350px)] translate-x-[350px]"}`}
+          className={`min-h-[100vh] pt-16 sm:px-6 ${showSidePanel ? "w-full translate-x-0" : "w-[calc(100%_-_100vw)] translate-x-[100vw] sm:w-[calc(100%_-_320px)] sm:translate-x-[320px]"}`}
         >
           <div className="relative m-auto flex h-full flex-col px-8 pb-36">
             <div
@@ -461,7 +461,7 @@ function App() {
                 <TextArea
                   id="prompt"
                   aria-label="prompt"
-                  className="mr-2 w-full resize-none bg-transparent p-2 text-[0.95rem] text-neutral-600
+                  className="w-full resize-none bg-transparent p-2 text-[0.95rem] text-neutral-600
                             outline-none placeholder:text-neutral-400 dark:text-white"
                   value={prompt}
                   onChange={(e) => setPrompt(e.target.value)}
@@ -500,7 +500,7 @@ function App() {
                 )}
               </div>
 
-              <div className="mt-2 flex flex-col gap-2 print:hidden">
+              <div className="mt-2 flex min-w-[200px] flex-col gap-2 print:hidden">
                 <div className="inline-flex w-full justify-center text-xs text-neutral-400 dark:text-neutral-500">
                   LLMs can make mistakes. Consider checking important
                   information.
