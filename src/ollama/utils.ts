@@ -131,14 +131,14 @@ export const parseJSON = async function* <T = unknown>(
 
 export const formatHost = (host: string): string => {
   if (!host) {
-    return "http://127.0.0.1:11434";
+    return "http://localhost:11434";
   }
 
   let isExplicitProtocol = host.includes("://");
 
   if (host.startsWith(":")) {
     // if host starts with ':', prepend the default hostname
-    host = `http://127.0.0.1${host}`;
+    host = `http://localhost${host}`;
     isExplicitProtocol = false;
   }
 

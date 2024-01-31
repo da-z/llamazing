@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import "./App.css";
 import { Button } from "./rac/Button.tsx";
-import { ChatResponse, Message, Ollama } from "./ollama";
+import ollama, { ChatResponse, Message } from "./ollama";
 import {
   Bot,
   ChevronLeftIcon,
@@ -69,11 +69,7 @@ function App() {
   const chatAreaRef = useRef<HTMLDivElement>(null);
   const promptRef = useRef<HTMLTextAreaElement>(null);
 
-  const ollamaRef = useRef<Ollama>();
-
   useEffect(() => {
-    const ollama = new Ollama({ host: window.location + "ollama" });
-    ollamaRef.current = ollama;
     (async () => {
       setModels((await ollama.list()).models.map((m) => m.name));
     })();
@@ -104,6 +100,25 @@ function App() {
     } else {
       setCurrentTheme(themePreference);
     }
+  }, [themePreference]);
+
+  useEffect(() => {
+    const dark = window.matchMedia("(prefers-color-scheme: dark)");
+    const light = window.matchMedia("(prefers-color-scheme: dark)");
+
+    const onThemeChange = () => {
+      if (themePreference === "system") {
+        setCurrentTheme(getSystemThemePreference());
+      }
+    };
+
+    dark.addEventListener("change", onThemeChange);
+    light.addEventListener("change", onThemeChange);
+
+    return function cleanup() {
+      dark.removeEventListener("change", onThemeChange);
+      light.removeEventListener("change", onThemeChange);
+    };
   }, [themePreference]);
 
   function toggleThemePreference() {
@@ -163,8 +178,6 @@ function App() {
   });
 
   const chat = async (message: string) => {
-    if (!ollamaRef.current) return;
-
     setMessages((prev) => [...prev, { role: "user", content: message }]);
 
     stopGeneratingRef.current = false;
@@ -176,18 +189,16 @@ function App() {
 
     const now = new Date();
 
-    const res = await ollamaRef.current.chat({
+    const res = await ollama.chat({
       model,
       messages: [
         {
           role: "system",
           content: `
-          --PRIVATE-SYSTEM-INFORMATION--
           Global date and time: ${utcDateFormatter.format(now)}
           Local date and time: ${localDateFormatter.format(now)}
           Location: ${Intl.DateTimeFormat().resolvedOptions().timeZone}
-          *ONLY* if asked to write code, begin code with \`\`\` and if the code is pseudocode, begin with \`\`\`pseudocode \`\`\`
-          --PRIVATE-SYSTEM-INFORMATION--
+          Note: code examples begin with \`\`\` and pseudocode begins with \`\`\`pseudocode
           ${systemPromptEnabled ? systemPrompt : ""}`.trim(),
         },
         ...messages,
@@ -373,10 +384,10 @@ function App() {
                 id="system-prompt"
                 aria-label="system-prompt"
                 disabled={!systemPromptEnabled}
-                className="mt-2 h-32 w-full rounded-xl border border-neutral-300 p-4 pr-8 text-[0.9rem]
-                           outline-none focus:border-neutral-400 disabled:resize-none disabled:text-neutral-300
-                           dark:border-neutral-400/40 dark:bg-neutral-800 dark:text-neutral-200
-                           dark:focus:border-neutral-500 dark:disabled:border-neutral-700/50 dark:disabled:text-neutral-600"
+                className="mt-2 h-32 w-full rounded-xl border border-neutral-300 p-4 pr-8 text-[0.85rem]
+                           outline-none focus:border-neutral-400 disabled:select-none disabled:resize-none
+                           disabled:text-neutral-300 dark:border-neutral-400/40 dark:bg-neutral-800 dark:text-neutral-300
+                           dark:focus:border-neutral-500 disabled:dark:border-neutral-700/50 disabled:dark:text-neutral-500"
                 value={systemPrompt}
                 onChange={(e) => setSystemPrompt(e.target.value)}
               />

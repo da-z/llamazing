@@ -1,16 +1,17 @@
 {
-  "name": "ollamazing",
+  "name": "llamazing",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.5.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --open --host 0.0.0.0",
+    "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
+    "tauri": "tauri",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0 --fix",
     "format": "prettier --write .",
     "check-format": "prettier --check .",
-    "reinstall": "rm -rf node_modules; rm pnpm-lock.yaml; pnpm install"
+    "reinstall": "rimraf node_modules pnpm-lock.yaml && pnpm install"
   },
   "dependencies": {
     "@heroicons/react": "^2.1.1",
@@ -36,6 +37,8 @@
     "tailwindcss-react-aria-components": "^1.0.0"
   },
   "devDependencies": {
+    "@tauri-apps/api": "^1.5.3",
+    "@tauri-apps/cli": "^1.5.9",
     "@types/react": "^18.2.48",
     "@types/react-dom": "^18.2.18",
     "@types/react-syntax-highlighter": "^15.5.11",
@@ -48,11 +51,12 @@
     "husky": "^9.0.7",
     "prettier": "^3.2.4",
     "typescript": "^5.3.3",
-    "vite": "^5.0.12"
+    "vite": "^5.0.12",
+    "rimraf": "^5.0.5"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "pnpm run check-format"
+      "pre-commit": "pnpm lint && pnpm run check-format"
     }
   }
 }
