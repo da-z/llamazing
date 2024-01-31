@@ -1,4 +1,10 @@
-import React, { KeyboardEvent, useEffect, useRef, useState } from "react";
+import React, {
+  KeyboardEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import "./App.css";
 import { Button } from "./rac/Button.tsx";
 import { ChatResponse, Message, Ollama } from "./ollama";
@@ -176,12 +182,12 @@ function App() {
         {
           role: "system",
           content: `
-          ---
+          --PRIVATE-SYSTEM-INFORMATION--
           Global date and time: ${utcDateFormatter.format(now)}
           Local date and time: ${localDateFormatter.format(now)}
           Location: ${Intl.DateTimeFormat().resolvedOptions().timeZone}
-          ---
           *ONLY* if asked to write code, begin code with \`\`\` and if the code is pseudocode, begin with \`\`\`pseudocode \`\`\`
+          --PRIVATE-SYSTEM-INFORMATION--
           ${systemPromptEnabled ? systemPrompt : ""}`.trim(),
         },
         ...messages,
@@ -244,6 +250,10 @@ function App() {
     }
   };
 
+  const toggleSidePanel = useCallback(() => {
+    setShowSidePanel(!sidePanelShownRef.current);
+  }, [setShowSidePanel]);
+
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       if (e.metaKey && ["Delete", "Backspace"].includes(e.key)) {
@@ -260,7 +270,7 @@ function App() {
     return function cleanup() {
       document.removeEventListener("keydown", handleKeyDown as never);
     };
-  }, []);
+  }, [toggleSidePanel]);
 
   function canSubmit() {
     return !isGenerating && prompt && model;
@@ -277,10 +287,6 @@ function App() {
 
   function stopGenerating() {
     stopGeneratingRef.current = true;
-  }
-
-  function toggleSidePanel() {
-    setShowSidePanel(!sidePanelShownRef.current);
   }
 
   return (
