@@ -7,8 +7,11 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   CircleUserRound,
+  CommandIcon,
+  DeleteIcon,
   Globe,
   MoonIcon,
+  PlusIcon,
   SendHorizonal,
   StopCircleIcon,
   SunIcon,
@@ -379,7 +382,13 @@ function App() {
                 >
                   <div className="inline-flex items-center justify-center gap-2">
                     <Trash2Icon className="m-auto" size="16" />
-                    Clear conversation (⌘ + ⌫)
+                    Clear conversation
+                    <span className="inline-flex items-center justify-center px-0">
+                      (
+                      <CommandIcon size="14" />
+                      <PlusIcon size="14" />
+                      <DeleteIcon size="18" />)
+                    </span>
                   </div>
                 </Button>
               </div>
