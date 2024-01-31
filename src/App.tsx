@@ -251,6 +251,7 @@ function App() {
         setTimeout(() => clearMessages(), 50);
       } else if (e.altKey && e.key === "Tab") {
         toggleSidePanel();
+        promptRef.current?.focus();
       }
     }
 
