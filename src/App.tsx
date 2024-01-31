@@ -313,7 +313,7 @@ function App() {
         </ToggleButton>
 
         <div
-          className={`fixed w-full transform transition-transform duration-100 ${showSidePanel ? "-translate-x-full" : "translate-x-0"}`}
+          className={`fixed w-full transform transition-transform duration-0 sm:duration-300 ${showSidePanel ? "-translate-x-full" : "translate-x-0"}`}
         >
           <aside className="relative flex h-screen min-h-[100vh] w-[100vw] flex-col bg-neutral-200 p-6 py-2 dark:bg-neutral-800 sm:w-[320px]">
             <h1 className="mx-auto mb-6 mt-6 flex select-none gap-2 text-3xl">
@@ -387,7 +387,13 @@ function App() {
         </div>
 
         <main
-          className={`min-h-[100vh] pt-16 sm:px-6 ${showSidePanel ? "w-full translate-x-0" : "w-[calc(100%_-_100vw)] translate-x-[100vw] sm:w-[calc(100%_-_320px)] sm:translate-x-[320px]"}`}
+          className={`min-h-[100vh] transform pt-16 transition-transform duration-0 sm:px-6 sm:duration-300
+                      ${
+                        showSidePanel
+                          ? "w-full translate-x-0"
+                          : "w-[calc(100%_-_100vw)] translate-x-[100vw] sm:w-[calc(100%_-_320px)] sm:translate-x-[320px]"
+                      }
+          `}
         >
           <div className="relative m-auto flex h-full flex-col px-8 pb-36">
             <div
