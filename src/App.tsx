@@ -388,7 +388,7 @@ function App() {
         </div>
 
         <main
-          className={`min-h-[100vh] transform pt-16 transition-transform duration-0 sm:px-6 sm:duration-300
+          className={`min-h-[100vh] transform pt-16 transition-transform duration-0 sm:duration-300
                       ${
                         showSidePanel
                           ? "w-full translate-x-0"
@@ -396,9 +396,9 @@ function App() {
                       }
           `}
         >
-          <div className="relative m-auto flex h-full flex-col px-8 pb-36">
+          <div className="relative m-auto flex h-full flex-col pb-36">
             <div
-              className="grid grid-cols-[auto_minmax(0,_1fr)] gap-x-6 gap-y-4 overflow-y-auto"
+              className="grid grid-cols-[auto_minmax(0,_1fr)] gap-x-6 gap-y-4 overflow-y-auto px-8"
               ref={chatAreaRef}
               onWheel={onWheel}
             >
