@@ -236,7 +236,7 @@ function App() {
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
-      if ((e.metaKey || e.ctrlKey) && ["Delete", "Backspace"].includes(e.key)) {
+      if (e.metaKey && ["Delete", "Backspace"].includes(e.key)) {
         stopGenerating();
         setTimeout(() => clearMessages(), 50);
       }
@@ -378,7 +378,7 @@ function App() {
                 >
                   <div className="inline-flex items-center justify-center gap-2">
                     <Trash2Icon className="m-auto" size="16" />
-                    Clear conversation
+                    Clear conversation (⌘ + ⌫)
                   </div>
                 </Button>
               </div>
