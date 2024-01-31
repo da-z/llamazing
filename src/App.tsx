@@ -392,7 +392,7 @@ function App() {
                       ${
                         showSidePanel
                           ? "w-full translate-x-0"
-                          : "w-[calc(100%_-_100vw)] translate-x-[100vw] sm:w-[calc(100%_-_320px)] sm:translate-x-[320px]"
+                          : "hidden w-[calc(100%_-_100vw)] translate-x-[100vw] sm:block sm:w-[calc(100%_-_320px)] sm:translate-x-[320px]"
                       }
           `}
         >
