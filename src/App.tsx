@@ -56,6 +56,8 @@ function App() {
     "showSidePanel",
     true,
   );
+
+  const sidePanelShownRef = useRef<boolean>(false);
   const stopGeneratingRef = useRef<boolean>(false);
 
   const chatAreaRef = useRef<HTMLDivElement>(null);
@@ -70,6 +72,10 @@ function App() {
       setModels((await ollama.list()).models.map((m) => m.name));
     })();
   }, []);
+
+  useEffect(() => {
+    sidePanelShownRef.current = showSidePanel;
+  }, [showSidePanel]);
 
   function getSystemThemePreference() {
     if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
@@ -243,6 +249,8 @@ function App() {
       if (e.metaKey && ["Delete", "Backspace"].includes(e.key)) {
         stopGenerating();
         setTimeout(() => clearMessages(), 50);
+      } else if (e.altKey && e.key === "Tab") {
+        toggleSidePanel();
       }
     }
 
@@ -271,7 +279,7 @@ function App() {
   }
 
   function toggleSidePanel() {
-    setShowSidePanel(!showSidePanel);
+    setShowSidePanel(!sidePanelShownRef.current);
   }
 
   return (
