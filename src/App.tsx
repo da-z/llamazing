@@ -126,7 +126,8 @@ function App() {
         current.scrollHeight > current.clientHeight
       ) {
         const isNearBottom =
-          current.scrollTop + current.clientHeight >= current.scrollHeight - 50;
+          current.scrollTop + current.clientHeight >=
+          current.scrollHeight - 250;
 
         if (isNearBottom) {
           setAutoScroll(true);
