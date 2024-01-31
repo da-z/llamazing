@@ -38,10 +38,10 @@ $ pnpm tauri dev
 
 <img src="app-icon.png" width="150"/>
 
-**❗Note**: In order for the standalone app to work, you have to run ollama server like this (for now):
+**❗Note**: In order for the standalone app to work, you have to run ollama server like this:
 
 ```shell
-$ OLLAMA_ORIGINS=* ollama serve
+$ OLLAMA_ORIGINS=*://localhost ollama serve
 ```
 
 ## Build App (Mac Universal)
