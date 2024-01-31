@@ -1,7 +1,7 @@
 import React, { KeyboardEvent, useEffect, useRef, useState } from "react";
 import "./App.css";
 import { Button } from "./rac/Button.tsx";
-import ollama, { ChatResponse, Message } from "./ollama";
+import { ChatResponse, Message, Ollama } from "./ollama";
 import {
   Bot,
   ChevronLeftIcon,
@@ -58,7 +58,11 @@ function App() {
   const chatAreaRef = useRef<HTMLDivElement>(null);
   const promptRef = useRef<HTMLTextAreaElement>(null);
 
+  const ollamaRef = useRef<Ollama>();
+
   useEffect(() => {
+    const ollama = new Ollama({ host: window.location + "ollama" });
+    ollamaRef.current = ollama;
     (async () => {
       setModels((await ollama.list()).models.map((m) => m.name));
     })();
@@ -99,13 +103,14 @@ function App() {
 
   useEffect(() => {
     if (autoScroll) {
-      const intervalId = setInterval(
-        () => chatAreaRef.current?.scrollBy({ top: 9999, behavior: "smooth" }),
-        50,
-      );
+      const intervalId = setInterval(() => {
+        if (isGenerating) {
+          chatAreaRef.current?.scrollBy({ top: 9999, behavior: "smooth" });
+        }
+      }, 50);
       return () => clearInterval(intervalId);
     }
-  }, [autoScroll]);
+  }, [autoScroll, isGenerating]);
 
   const onWheel = (e: React.WheelEvent<HTMLElement>) => {
     const { current } = chatAreaRef;
@@ -142,6 +147,8 @@ function App() {
   });
 
   const chat = async (message: string) => {
+    if (!ollamaRef.current) return;
+
     setMessages((prev) => [...prev, { role: "user", content: message }]);
 
     stopGeneratingRef.current = false;
@@ -153,7 +160,7 @@ function App() {
 
     const now = new Date();
 
-    const res = await ollama.chat({
+    const res = await ollamaRef.current.chat({
       model,
       messages: [
         {
@@ -266,7 +273,7 @@ function App() {
   return (
     <div className={currentTheme}>
       <div className="relative flex h-screen bg-white font-sans text-gray-700 dark:bg-neutral-700 dark:text-white">
-        <div className="absolute right-4 top-4 print:hidden">
+        <div className="absolute right-4 top-4 z-10 print:hidden">
           <TooltipTrigger delay={400} closeDelay={50}>
             <ToggleButton
               onChange={toggleThemePreference}
@@ -294,30 +301,21 @@ function App() {
 
         <ToggleButton
           onPressEnd={toggleSidePanel}
-          className="absolute left-4 top-4 hidden rounded-full border-none bg-neutral-100 p-0.5 text-neutral-300
+          className="fixed left-4 top-4 z-10 rounded-full border-none bg-neutral-100 p-0.5 text-neutral-300
                      transition-none hover:bg-neutral-100 hover:text-neutral-400 dark:bg-neutral-800
-                     dark:text-neutral-600 hover:dark:bg-neutral-600 hover:dark:text-neutral-400 lg:block"
+                     dark:text-neutral-600 hover:dark:bg-neutral-600 hover:dark:text-neutral-400"
         >
           {showSidePanel ? (
-            <ChevronLeftIcon size="24" strokeWidth="3"></ChevronLeftIcon>
-          ) : (
             <ChevronRightIcon size="24" strokeWidth="3"></ChevronRightIcon>
+          ) : (
+            <ChevronLeftIcon size="24" strokeWidth="3"></ChevronLeftIcon>
           )}
         </ToggleButton>
 
-        <div className={`${showSidePanel ? "" : "hidden"}`}>
-          <aside className="relative hidden h-screen min-h-[400px] w-0 flex-col bg-neutral-200 p-6 py-2 dark:bg-neutral-800 md:w-[350px] lg:flex">
-            <ToggleButton
-              onPressEnd={toggleSidePanel}
-              className="absolute right-0 top-4 hidden translate-x-[50%] rounded-full border-none bg-white p-0.5 text-neutral-300 transition-none hover:bg-white hover:text-neutral-400 dark:bg-neutral-800 dark:text-neutral-600 hover:dark:bg-neutral-600 hover:dark:text-neutral-400 lg:block"
-            >
-              {showSidePanel ? (
-                <ChevronLeftIcon size="24" strokeWidth="3"></ChevronLeftIcon>
-              ) : (
-                <ChevronRightIcon size="24" strokeWidth="3"></ChevronRightIcon>
-              )}
-            </ToggleButton>
-
+        <div
+          className={`fixed w-full transform transition-transform duration-100 ${showSidePanel ? "-translate-x-full" : "translate-x-0"}`}
+        >
+          <aside className="relative flex h-screen min-h-[400px] w-[350px] flex-col bg-neutral-200 p-6 py-2 dark:bg-neutral-800">
             <h1 className="mx-auto mb-6 mt-6 flex select-none gap-2 text-3xl">
               <Bot size="34" /> LLaMazing
             </h1>
@@ -351,7 +349,7 @@ function App() {
                 </span>
               ) : null}
             </div>
-            <div className="relative w-auto w-full">
+            <div className="relative w-full">
               <TextArea
                 id="system-prompt"
                 aria-label="system-prompt"
@@ -388,7 +386,9 @@ function App() {
           </aside>
         </div>
 
-        <main className="min-h-[400px] flex-1 pt-14 sm:px-6">
+        <main
+          className={`min-h-[400px] transform pt-16 transition-transform sm:px-6 ${showSidePanel ? "w-full translate-x-0" : "w-[calc(100%_-_350px)] translate-x-[350px]"}`}
+        >
           <div className="relative m-auto flex h-full flex-col px-8 pb-36">
             <div
               className="grid grid-cols-[auto_minmax(0,_1fr)] gap-x-6 gap-y-4 overflow-y-auto"
