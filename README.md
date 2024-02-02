@@ -36,7 +36,7 @@ $ pnpm tauri dev
 
 ## Standalone App
 
-Build one yourself or download from https://github.com/da-z/llamazing/releases 
+Build one yourself or download from https://github.com/da-z/llamazing/releases
 
 <img src="app-icon.png" width="150"/>
 

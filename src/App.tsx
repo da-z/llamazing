@@ -18,6 +18,7 @@ import {
   Globe,
   MoonIcon,
   PlusIcon,
+  RefreshCwIcon,
   SendHorizonal,
   StopCircleIcon,
   SunIcon,
@@ -69,9 +70,13 @@ function App() {
   const chatAreaRef = useRef<HTMLDivElement>(null);
   const promptRef = useRef<HTMLTextAreaElement>(null);
 
+  async function reloadModels() {
+    setModels((await ollama.list()).models.map((m) => m.name));
+  }
+
   useEffect(() => {
     (async () => {
-      setModels((await ollama.list()).models.map((m) => m.name));
+      await reloadModels();
     })();
   }, []);
 
@@ -284,7 +289,7 @@ function App() {
   }, [toggleSidePanel]);
 
   function canSubmit() {
-    return !isGenerating && prompt && model;
+    return !isGenerating && prompt && model && models.length;
   }
 
   function clearMessages() {
@@ -302,7 +307,7 @@ function App() {
 
   return (
     <div className={currentTheme}>
-      <div className="relative flex h-screen bg-white font-sans text-gray-700 dark:bg-neutral-700 dark:text-white">
+      <div className="relative flex h-screen cursor-default bg-white font-sans text-gray-700 dark:bg-neutral-700 dark:text-white">
         <div className="absolute right-4 top-4 z-10 print:hidden">
           <TooltipTrigger delay={400} closeDelay={50}>
             <ToggleButton
@@ -350,18 +355,25 @@ function App() {
               <Bot size="34" /> LLaMazing
             </h1>
 
-            <Select
-              label="Model"
-              selectedKey={model}
-              aria-label="select-model"
-              onSelectionChange={(s) => setModel(String(s))}
-            >
-              {models.map((m, i) => (
-                <ListBoxItem id={m} key={"model" + i}>
-                  {m}
-                </ListBoxItem>
-              ))}
-            </Select>
+            <div className="flex items-center gap-3">
+              <Select
+                selectedKey={model}
+                aria-label="select-model"
+                className="flex-1"
+                onSelectionChange={(s) => setModel(String(s))}
+              >
+                {models.map((m, i) => (
+                  <ListBoxItem id={m} key={"model" + i}>
+                    {m}
+                  </ListBoxItem>
+                ))}
+              </Select>
+              <RefreshCwIcon
+                size="16"
+                className="shrink-0 cursor-pointer hover:text-neutral-500 active:text-neutral-700"
+                onClick={reloadModels}
+              ></RefreshCwIcon>
+            </div>
 
             <div className="relative mt-4 flex select-none items-center">
               <Globe
@@ -371,21 +383,21 @@ function App() {
               <Label className="text-neutral-700">System Prompt:</Label>
               {systemPromptEnabled && systemPrompt != DEFAULT_PROMPT ? (
                 <span
-                  className="absolute right-1 top-1 rounded bg-neutral-400 p-0.5 px-2 text-xs
-                             text-white hover:bg-neutral-500 dark:bg-neutral-700 hover:dark:bg-neutral-600"
+                  className="absolute right-1 top-1 cursor-pointer rounded bg-neutral-400 p-0.5 px-2
+                             text-xs text-white hover:bg-neutral-500 dark:bg-neutral-700 hover:dark:bg-neutral-600"
                   onClick={() => setSystemPrompt(DEFAULT_PROMPT)}
                 >
                   reset
                 </span>
               ) : null}
             </div>
-            <div className="relative w-full">
+            <div className="relative w-full select-none">
               <TextArea
                 id="system-prompt"
                 aria-label="system-prompt"
                 disabled={!systemPromptEnabled}
-                className="mt-2 h-32 w-full rounded-xl border border-neutral-300 p-4 pr-8 text-[0.85rem]
-                           outline-none focus:border-neutral-400 disabled:select-none disabled:resize-none
+                className="mt-2 h-32 w-full select-none rounded-xl border border-neutral-300 p-4 pr-8
+                           text-[0.85rem] outline-none focus:border-neutral-400 disabled:resize-none
                            disabled:text-neutral-300 dark:border-neutral-400/40 dark:bg-neutral-800 dark:text-neutral-300
                            dark:focus:border-neutral-500 disabled:dark:border-neutral-700/50 disabled:dark:text-neutral-500"
                 value={systemPrompt}
@@ -394,11 +406,11 @@ function App() {
               <Checkbox
                 isSelected={systemPromptEnabled}
                 onChange={setSystemPromptEnabled}
-                className="absolute bottom-3 right-3"
+                className="absolute bottom-3 right-3 cursor-pointer"
               ></Checkbox>
             </div>
 
-            <div className="absolute bottom-0 left-0 w-full p-4">
+            <div className="absolute bottom-0 left-0 w-full select-none p-4">
               <div className="mt-4">
                 <Button
                   variant="secondary"
@@ -441,7 +453,7 @@ function App() {
                 className="rounded bg-purple-400 p-[4px] text-white dark:bg-yellow-400 dark:text-yellow-900"
                 size="38"
               />
-              <div className="mt-[7px] flex flex-col gap-2 pr-8">
+              <div className="mt-[7px] flex select-none flex-col gap-2 pr-8">
                 How may I help you?
               </div>
               {messages.map((m, i) => (
@@ -498,13 +510,13 @@ function App() {
             <div className="absolute bottom-0 left-0 right-0 px-4 pb-3 pt-8 print:hidden">
               <div
                 className="flex rounded-xl border-2 border-neutral-500/50 bg-white p-2
-                              drop-shadow-lg has-[:focus]:border-neutral-500 dark:bg-neutral-700"
+                              has-[:focus]:border-neutral-500 dark:bg-neutral-700"
               >
                 <TextArea
                   id="prompt"
                   aria-label="prompt"
-                  className="w-full resize-none bg-transparent p-2 text-[0.95rem] text-neutral-600
-                            outline-none placeholder:text-neutral-400 dark:text-white"
+                  className="w-full select-none resize-none bg-transparent p-2 text-[0.95rem]
+                            text-neutral-600 outline-none placeholder:text-neutral-400 dark:text-white"
                   value={prompt}
                   onChange={(e) => setPrompt(e.target.value)}
                   onKeyDown={handleKeyDownOnPrompt}
@@ -543,7 +555,7 @@ function App() {
               </div>
 
               <div className="mt-3 flex min-w-[200px] flex-col gap-2 print:hidden">
-                <div className="inline-flex w-full justify-center text-xs text-neutral-400 dark:text-neutral-500">
+                <div className="inline-flex w-full select-none justify-center text-xs text-neutral-400 dark:text-neutral-500">
                   LLMs can make mistakes. Consider checking important
                   information.
                 </div>
