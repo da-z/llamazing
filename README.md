@@ -37,7 +37,7 @@ $ pnpm i
 $ pnpm dev --open
 ```
 
-## Option 2 : Standalone app
+### Option 2 : Standalone app
 
 Build one yourself (see below) or download a release from https://github.com/da-z/llamazing/releases
 
