@@ -351,8 +351,15 @@ function App() {
           className={`fixed w-full transform transition-transform duration-0 sm:duration-300 ${showSidePanel ? "-translate-x-full" : "translate-x-0"}`}
         >
           <aside className="relative flex h-screen min-h-[100vh] w-[100vw] flex-col bg-neutral-200 p-6 py-2 dark:bg-neutral-800 sm:w-[320px]">
-            <h1 className="mx-auto mb-6 mt-6 flex select-none gap-2 text-3xl">
-              <Bot size="34" /> LLaMazing
+            <h1 className="mx-auto mb-6 mt-6 flex select-none items-center gap-2 text-3xl">
+              <span className="shrink-0 overflow-hidden">
+                <img
+                  className="object-fil h-20 w-20"
+                  alt="@llamazing"
+                  src="../app-icon.png"
+                />
+              </span>
+              LLaMazing
             </h1>
 
             <div className="flex items-center gap-3">
