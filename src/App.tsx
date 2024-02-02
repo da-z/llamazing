@@ -356,7 +356,7 @@ function App() {
                 <img
                   className="object-fil h-20 w-20"
                   alt="@llamazing"
-                  src="../app-icon.png"
+                  src="/app-icon.png"
                 />
               </span>
               LLaMazing
