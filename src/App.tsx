@@ -13,6 +13,7 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   CircleUserRound,
+  Clipboard,
   CommandIcon,
   DeleteIcon,
   Globe,
@@ -34,6 +35,7 @@ import { ListBoxItem } from "./rac/ListBox.tsx";
 import { ToggleButton } from "./rac/ToggleButton.tsx";
 import useLocalStorageState from "./hooks.ts";
 import { Checkbox } from "./rac/Checkbox.tsx";
+import copy from "clipboard-copy";
 
 const DEFAULT_PROMPT = `You are a helpful AI assistant trained on a vast amount of human knowledge. Answer as concisely as possible.`;
 
@@ -305,6 +307,23 @@ function App() {
     stopGeneratingRef.current = true;
   }
 
+  async function copyMessageToClipboard(
+    m: Message & { context?: Partial<ChatResponse> },
+  ) {
+    await copy(m.content);
+  }
+
+  async function copyAllMessagesToClipboard() {
+    await copy(
+      messages
+        .map(
+          (m) =>
+            "##### " + m.role.toUpperCase() + ":\n\n" + m.content + "\n\n---",
+        )
+        .join("\n\n"),
+    );
+  }
+
   return (
     <div className={currentTheme}>
       <div className="relative flex h-screen cursor-default bg-white font-sans text-gray-700 dark:bg-neutral-700 dark:text-white">
@@ -355,11 +374,11 @@ function App() {
               <span className="shrink-0 overflow-hidden">
                 <img
                   className="object-fil h-20 w-20"
-                  alt="@llamazing"
+                  alt="logo"
                   src="/app-icon.png"
                 />
               </span>
-              LLaMazing
+              <span className="font-prose">LLaMazing</span>
             </h1>
 
             <div className="flex items-center gap-3">
@@ -442,7 +461,7 @@ function App() {
         </div>
 
         <main
-          className={`min-h-[100vh] transform pt-16 transition-transform duration-0 sm:duration-300
+          className={`min-h-[100vh] transform pt-16 font-prose transition-transform duration-0 sm:duration-300
                       ${
                         showSidePanel
                           ? "w-full translate-x-0"
@@ -452,15 +471,22 @@ function App() {
         >
           <div className="relative m-auto flex h-full flex-col pb-36">
             <div
-              className="grid grid-cols-[auto_minmax(0,_1fr)] gap-x-6 gap-y-4 overflow-y-auto px-8"
+              className="grid select-none grid-cols-[auto_minmax(0,_1fr)] gap-x-6 gap-y-4 overflow-y-auto px-8"
               ref={chatAreaRef}
               onWheel={onWheel}
             >
-              <Bot
-                className="rounded bg-purple-400 p-[4px] text-white dark:bg-yellow-400 dark:text-yellow-900"
-                size="38"
-              />
-              <div className="mt-[7px] flex select-none flex-col gap-2 pr-8">
+              <div className="group relative h-10 w-10 select-none">
+                <Clipboard
+                  className="absolute rounded bg-purple-400 p-[4px] text-white active:text-purple-700 dark:bg-yellow-400 dark:text-yellow-900 active:dark:text-yellow-100"
+                  size="38"
+                  onClick={() => copyAllMessagesToClipboard()}
+                />
+                <Bot
+                  className="absolute rounded bg-purple-400 p-[4px] text-white group-hover:hidden dark:bg-yellow-400 dark:text-yellow-900"
+                  size="38"
+                />
+              </div>
+              <div className="mt-[7px] flex select-none flex-col gap-2 pr-8 font-prose">
                 How may I help you?
               </div>
               {messages.map((m, i) => (
@@ -468,23 +494,39 @@ function App() {
                   {
                     {
                       user: (
-                        <CircleUserRound
-                          className="rounded bg-blue-400 p-[6px] text-white dark:bg-orange-400 dark:text-orange-900"
-                          size="38"
-                          key={"icn" + i}
-                        />
+                        <div className="group relative h-10 w-10 select-none">
+                          <Clipboard
+                            className="absolute rounded bg-blue-400 p-[6px] text-white active:text-blue-700 dark:bg-orange-400 dark:text-orange-900 active:dark:text-orange-100"
+                            size="38"
+                            key={"icn_clip" + i}
+                            onClick={() => copyMessageToClipboard(m)}
+                          />
+                          <CircleUserRound
+                            className="absolute rounded bg-blue-400 p-[6px] text-white group-hover:hidden dark:bg-orange-400 dark:text-orange-900"
+                            size="38"
+                            key={"icn" + i}
+                          />
+                        </div>
                       ),
                       assistant: (
-                        <Bot
-                          className="rounded bg-purple-400 p-[4px] text-white dark:bg-yellow-400 dark:text-yellow-900"
-                          size="38"
-                          key={"icn" + i}
-                        />
+                        <div className="group relative h-10 w-10 select-none">
+                          <Clipboard
+                            className="absolute rounded bg-purple-400 p-[4px] text-white active:text-purple-700 dark:bg-yellow-400 dark:text-yellow-900 active:dark:text-yellow-100"
+                            size="38"
+                            key={"icn_clip" + i}
+                            onClick={() => copyMessageToClipboard(m)}
+                          />
+                          <Bot
+                            className="absolute rounded bg-purple-400 p-[4px] text-white group-hover:hidden dark:bg-yellow-400 dark:text-yellow-900"
+                            size="38"
+                            key={"icn" + i}
+                          />
+                        </div>
                       ),
                     }[m.role]
                   }
                   <div
-                    className={`prose flex flex-col gap-2 pr-8
+                    className={`prose flex select-text flex-col gap-2 pr-8
                                ${m.role === "user" ? "-ml-3 mr-4 rounded-[0.4rem] bg-neutral-100 pl-3 dark:bg-neutral-600" : ""}`}
                   >
                     <MarkdownRenderer
@@ -522,7 +564,7 @@ function App() {
                 <TextArea
                   id="prompt"
                   aria-label="prompt"
-                  className="w-full select-none resize-none bg-transparent p-2 text-[0.95rem]
+                  className="w-full select-none resize-none bg-transparent p-2 font-sans text-[0.95rem]
                             text-neutral-600 outline-none placeholder:text-neutral-400 dark:text-white"
                   value={prompt}
                   onChange={(e) => setPrompt(e.target.value)}

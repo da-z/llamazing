@@ -7,7 +7,7 @@
   },
   "package": {
     "productName": "LLaMazing",
-    "version": "0.5.1"
+    "version": "0.5.2"
   },
   "tauri": {
     "allowlist": {
@@ -36,7 +36,7 @@
         "fullscreen": false,
         "resizable": true,
         "title": "LLaMazing",
-        "width": 1100,
+        "width": 1000,
         "height": 700
       }
     ]

@@ -7,6 +7,7 @@ export default {
       fontFamily: {
         sans: ["Open Sans", "sans-serif"],
         mono: ["IBM Plex Mono", "monospace"],
+        prose: ["Space Grotesk", "sans-serif"],
       },
     },
   },
