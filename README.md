@@ -6,7 +6,7 @@ A simple frontend to Ollama.
 | ------------------------- | ------------------------ |
 | ![](screenshot-light.png) | ![](screenshot-dark.png) |
 
-## Install
+## Prerequisites
 
 Install [Ollama](https://ollama.ai/) and run the server.
 
@@ -16,55 +16,64 @@ Download some [models](https://ollama.ai/library). For example, one of my favori
 $ ollama pull dolphin-mistral
 ```
 
-Install the web ui
+## Using LLaMazing
+
+For using the app itself, there are 2 options:
+
+- Web UI
+- Stand-alone app
+
+### Option 1 : Web UI
+
+#### Install dependencies:
 
 ```shell
 $ pnpm i
 ```
 
-## Run in browser (dev mode)
+#### Run in browser (dev mode)
 
 ```shell
 $ pnpm dev --open
 ```
 
-## Run standalone app (dev mode)
+## Option 2 : Standalone app
 
-```shell
-$ pnpm tauri dev
-```
-
-## Standalone App
-
-Build one yourself or download from https://github.com/da-z/llamazing/releases
+Build one yourself (see below) or download a release from https://github.com/da-z/llamazing/releases
 
 <img src="app-icon.png" width="150"/>
 
-**❗Note**: In order for the standalone app to work, you have to run ollama server like this:
+**❗Note**: In order for the standalone app to work, you have to either manually start Ollama server like this:
 
 ```shell
 $ OLLAMA_ORIGINS=*://localhost ollama serve
 ```
 
-Alternatively, set the property globally and restart Ollama server
+or set the property globally (once) and restart Ollama server
 
 ```shell
 $ launchctl setenv OLLAMA_ORIGINS '*://localhost'
 ```
 
-## Build App (Mac Universal)
+#### Running standalone app in dev mode
+
+```shell
+$ pnpm tauri dev
+```
+
+#### Building app (Mac Universal)
 
 ```shell
 $ pnpm tauri build --target universal-apple-darwin
 ```
 
-## Build App for your system
+#### Building app for your system
 
 ```shell
 $ pnpm tauri build
 ```
 
-## Build App with debugging enabled
+#### Building app with debugging enabled
 
 Good for troubleshooting a build (enables dev tools):
 
