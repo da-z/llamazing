@@ -15,6 +15,7 @@ import {
   CircleUserRound,
   Clipboard,
   CommandIcon,
+  CopyIcon,
   DeleteIcon,
   Globe,
   MoonIcon,
@@ -476,15 +477,17 @@ function App() {
               onWheel={onWheel}
             >
               <div className="group relative h-10 w-10 select-none">
-                <Clipboard
-                  className="absolute rounded bg-purple-400 p-[4px] text-white active:text-purple-700 dark:bg-yellow-400 dark:text-yellow-900 active:dark:text-yellow-100"
-                  size="38"
-                  onClick={() => copyAllMessagesToClipboard()}
-                />
                 <Bot
-                  className="absolute rounded bg-purple-400 p-[4px] text-white group-hover:hidden dark:bg-yellow-400 dark:text-yellow-900"
+                  className="absolute rounded bg-purple-400 p-[4px] text-white dark:bg-yellow-400 dark:text-yellow-900"
                   size="38"
                 />
+                {messages.length ? (
+                  <CopyIcon
+                    className="absolute hidden cursor-pointer rounded bg-purple-400 p-[4px] text-white active:text-purple-700 group-hover:block dark:bg-yellow-400 dark:text-yellow-900 active:dark:text-black"
+                    size="38"
+                    onClick={() => copyAllMessagesToClipboard()}
+                  />
+                ) : null}
               </div>
               <div className="mt-[7px] flex select-none flex-col gap-2 pr-8 font-prose">
                 How may I help you?
@@ -496,7 +499,7 @@ function App() {
                       user: (
                         <div className="group relative h-10 w-10 select-none">
                           <Clipboard
-                            className="absolute rounded bg-blue-400 p-[6px] text-white active:text-blue-700 dark:bg-orange-400 dark:text-orange-900 active:dark:text-orange-100"
+                            className="absolute cursor-pointer rounded bg-blue-400 p-[6px] text-white active:text-blue-700 dark:bg-orange-400 dark:text-orange-900 active:dark:text-black"
                             size="38"
                             key={"icn_clip" + i}
                             onClick={() => copyMessageToClipboard(m)}
@@ -511,7 +514,7 @@ function App() {
                       assistant: (
                         <div className="group relative h-10 w-10 select-none">
                           <Clipboard
-                            className="absolute rounded bg-purple-400 p-[4px] text-white active:text-purple-700 dark:bg-yellow-400 dark:text-yellow-900 active:dark:text-yellow-100"
+                            className="absolute cursor-pointer rounded bg-purple-400 p-[4px] text-white active:text-purple-700 dark:bg-yellow-400 dark:text-yellow-900 active:dark:text-black"
                             size="38"
                             key={"icn_clip" + i}
                             onClick={() => copyMessageToClipboard(m)}
@@ -547,7 +550,6 @@ function App() {
                     <MarkdownRenderer
                       theme={currentTheme}
                       content={response + "▌"}
-                      showCopy={false}
                     />
                   </div>
                 </>
