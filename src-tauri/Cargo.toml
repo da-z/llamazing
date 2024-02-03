@@ -1,6 +1,6 @@
 [package]
 name = "llamazing"
-version = "0.5.3"
+version = "0.5.4"
 description = "LLaMazing - An Ollama UI"
 authors = ["da-z"]
 license = ""
