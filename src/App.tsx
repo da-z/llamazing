@@ -41,9 +41,9 @@ import { ToggleButton } from "./rac/ToggleButton.tsx";
 import useLocalStorageState from "./hooks.ts";
 import { Checkbox } from "./rac/Checkbox.tsx";
 import copy from "clipboard-copy";
-import { GridList, GridListItem } from "./rac/GridList.tsx";
 import { isFileDropItem } from "react-aria";
 import type { Selection } from "react-aria-components";
+import { ImageGridList, ImageGridListItem } from "./rac/ImageGridList.tsx";
 
 const DEFAULT_PROMPT = `You are a helpful AI assistant trained on a vast amount of human knowledge. Answer as concisely as possible.`;
 
@@ -458,7 +458,7 @@ function App() {
                 size="20"
               />
               <Label className="text-neutral-700">System Prompt:</Label>
-              {systemPromptEnabled && systemPrompt != DEFAULT_PROMPT ? (
+              {systemPromptEnabled && systemPrompt != DEFAULT_PROMPT && (
                 <span
                   aria-label="Reset system prompt"
                   className="absolute right-1 top-1 cursor-pointer rounded bg-neutral-400 p-0.5 px-2
@@ -467,7 +467,7 @@ function App() {
                 >
                   reset
                 </span>
-              ) : null}
+              )}
             </div>
             <div className="relative w-full select-none">
               <TextArea
@@ -488,14 +488,14 @@ function App() {
               ></Checkbox>
             </div>
 
-            {hasCapability("vision") ? (
+            {hasCapability("vision") && (
               <div className="mt-4">
-                <GridList
+                <ImageGridList
                   aria-label="Image drop list"
                   items={images}
                   dragAndDropHooks={dragAndDropHooks}
                   renderEmptyState={() =>
-                    "This model supports vision. You can drop images here and ask questions about it."
+                    "This model supports vision. You can drop images here and ask questions about them."
                   }
                   selectionMode="multiple"
                   selectedKeys={selectedImages}
@@ -503,24 +503,24 @@ function App() {
                   className="max-h-[300px] overflow-y-scroll rounded-xl border border-neutral-300 p-4 text-sm text-neutral-500"
                 >
                   {(item) => (
-                    <GridListItem
-                      id={item.id}
-                      textValue={item.url}
-                      className="bg-neutral-300"
-                    >
-                      <div className="relative w-full">
-                        <img className="w-20" src={item.url} alt={item.name} />
+                    <ImageGridListItem id={item.id} textValue={item.url}>
+                      <div className="relative">
+                        <img
+                          className="h-[100px] w-[100px] rounded object-cover"
+                          src={item.url}
+                          alt={item.name}
+                        />
                         <Trash2Icon
-                          size="20"
-                          className="absolute right-2 top-2 cursor-pointer"
+                          size="18"
+                          className="absolute right-1 top-1 z-10 cursor-pointer rounded bg-black/30 p-0.5 text-white hover:bg-black/70"
                           onClick={() => removeImage(item)}
                         />
                       </div>
-                    </GridListItem>
+                    </ImageGridListItem>
                   )}
-                </GridList>
+                </ImageGridList>
               </div>
-            ) : null}
+            )}
 
             <div className="flex-1"></div>
 
@@ -568,13 +568,13 @@ function App() {
                   className="absolute rounded bg-purple-400 p-[4px] text-white dark:bg-yellow-400 dark:text-yellow-900"
                   size="38"
                 />
-                {messages.length ? (
+                {messages.length && (
                   <CopyIcon
                     className="absolute hidden cursor-pointer rounded bg-purple-400 p-[4px] text-white active:text-purple-700 group-hover:block dark:bg-yellow-400 dark:text-yellow-900 active:dark:text-black"
                     size="38"
                     onClick={() => copyAllMessagesToClipboard()}
                   />
-                ) : null}
+                )}
               </div>
               <div className="mt-[7px] flex select-none flex-col gap-2 pr-8 font-prose">
                 How may I help you?
