@@ -206,10 +206,10 @@ function App() {
         {
           role: "system",
           content: `
+          ${systemPromptEnabled ? systemPrompt : ""}
           Global date and time: ${utcDateFormatter.format(now)}
           Local date and time: ${localDateFormatter.format(now)}
           Location: ${Intl.DateTimeFormat().resolvedOptions().timeZone}
-          Note: code examples begin with \`\`\` and pseudocode begins with \`\`\`pseudocode
           ${systemPromptEnabled ? systemPrompt : ""}`.trim(),
         },
         ...messages,

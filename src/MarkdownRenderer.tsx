@@ -85,16 +85,15 @@ interface MarkdownRendererProps {
 
 const Code: React.FC<CodeProps> = ({ className, children, theme }) => {
   const match = /language-(\w+)/.exec(className || "");
-  return match ? (
+  if (!match && !String(children).includes("\n")) {
+    return <code style={theme === "dark" ? dark : light}>{children}</code>;
+  }
+  return (
     <CodeBlock
-      language={match[1].toLowerCase()}
+      language={match ? match[1].toLowerCase() : ""}
       value={String(children).replace(/\n$/, "")}
       theme={theme}
     />
-  ) : (
-    <code className={className} style={theme === "dark" ? dark : light}>
-      {children}
-    </code>
   );
 };
 
