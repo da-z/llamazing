@@ -224,12 +224,11 @@ function App() {
       messages: [
         {
           role: "system",
-          content: `
-          ${systemPromptEnabled ? systemPrompt : ""}
-          Global date and time: ${utcDateFormatter.format(now)}
-          Local date and time: ${localDateFormatter.format(now)}
-          Location: ${Intl.DateTimeFormat().resolvedOptions().timeZone}
-          ${systemPromptEnabled ? systemPrompt : ""}`.trim(),
+          content: `${systemPromptEnabled ? systemPrompt : ""}
+Global date and time: ${utcDateFormatter.format(now)}
+Local date and time: ${localDateFormatter.format(now)}
+Location: ${Intl.DateTimeFormat().resolvedOptions().timeZone}
+${systemPromptEnabled ? systemPrompt : ""}`.trim(),
         },
         ...messages,
         hasCapability("vision")
