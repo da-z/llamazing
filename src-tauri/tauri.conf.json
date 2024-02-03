@@ -7,7 +7,7 @@
   },
   "package": {
     "productName": "LLaMazing",
-    "version": "0.5.2"
+    "version": "0.5.3"
   },
   "tauri": {
     "allowlist": {
