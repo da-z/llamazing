@@ -143,7 +143,10 @@ function App() {
     if (autoScroll) {
       const intervalId = setInterval(() => {
         if (isGenerating) {
-          chatAreaRef.current?.scrollBy({ top: 9999, behavior: "smooth" });
+          chatAreaRef.current?.scrollBy({
+            top: 250,
+            behavior: (window as any).__TAURI__ ? "auto" : "smooth",
+          });
         }
       }, 50);
       return () => clearInterval(intervalId);
