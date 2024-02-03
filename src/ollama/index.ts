@@ -82,14 +82,26 @@ export class Ollama {
   private async encodeImage(
     image: Blob | Uint8Array | ArrayBuffer | string,
   ): Promise<string> {
-    if (typeof image === "string") {
-      return image;
+    if (typeof image === "string" && !image.startsWith("blob:")) {
+      return image; // possibly already base64
     }
 
     const base64url = (await new Promise((r) => {
       const reader = new FileReader();
       reader.onload = () => r(reader.result);
-      if (image instanceof Blob) {
+      if (typeof image === "string" && image.startsWith("blob:")) {
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", image, true);
+        xhr.responseType = "blob";
+        xhr.onload = function () {
+          const reader = new FileReader();
+          reader.onload = function () {
+            r(reader.result);
+          };
+          reader.readAsDataURL(xhr.response);
+        };
+        xhr.send();
+      } else if (image instanceof Blob) {
         reader.readAsDataURL(image);
       } else {
         reader.readAsDataURL(new Blob([image]));

@@ -30,15 +30,28 @@ import {
 import MarkdownRenderer from "./MarkdownRenderer.tsx";
 import { Label } from "./rac/Field.tsx";
 import { Tooltip } from "./rac/Tooltip.tsx";
-import { TextArea, TooltipTrigger } from "react-aria-components";
+import {
+  TextArea,
+  TooltipTrigger,
+  useDragAndDrop,
+} from "react-aria-components";
 import { Select } from "./rac/Select.tsx";
 import { ListBoxItem } from "./rac/ListBox.tsx";
 import { ToggleButton } from "./rac/ToggleButton.tsx";
 import useLocalStorageState from "./hooks.ts";
 import { Checkbox } from "./rac/Checkbox.tsx";
 import copy from "clipboard-copy";
+import { GridList, GridListItem } from "./rac/GridList.tsx";
+import { isFileDropItem } from "react-aria";
+import type { Selection } from "react-aria-components";
 
 const DEFAULT_PROMPT = `You are a helpful AI assistant trained on a vast amount of human knowledge. Answer as concisely as possible.`;
+
+interface ImageItem {
+  id: number;
+  url: string;
+  name: string;
+}
 
 function App() {
   const [prompt, setPrompt] = useState(``);
@@ -66,6 +79,10 @@ function App() {
     "showSidePanel",
     true,
   );
+
+  const [images, setImages] = useState<ImageItem[]>([]);
+
+  const [selectedImages, setSelectedImages] = useState<Selection>(new Set([]));
 
   const sidePanelShownRef = useRef<boolean>(false);
   const stopGeneratingRef = useRef<boolean>(false);
@@ -145,7 +162,7 @@ function App() {
         if (isGenerating) {
           chatAreaRef.current?.scrollBy({
             top: 250,
-            behavior: (window as any).__TAURI__ ? "auto" : "smooth",
+            behavior: (window as any)["__TAURI__"] ? "auto" : "smooth",
           });
         }
       }, 50);
@@ -188,6 +205,8 @@ function App() {
     timeStyle: "long",
   });
 
+  type Capability = "vision";
+
   const chat = async (message: string) => {
     setMessages((prev) => [...prev, { role: "user", content: message }]);
 
@@ -213,7 +232,9 @@ function App() {
           ${systemPromptEnabled ? systemPrompt : ""}`.trim(),
         },
         ...messages,
-        { role: "user", content: message },
+        hasCapability("vision")
+          ? { role: "user", content: message, images: images.map((i) => i.url) }
+          : { role: "user", content: message },
       ],
       stream: true,
       options: {
@@ -311,6 +332,14 @@ function App() {
     stopGeneratingRef.current = true;
   }
 
+  function hasCapability(c: Capability) {
+    // TODO: use capabilities from API (when ready)
+    if (c === "vision") {
+      return ["llava"].some((m) => model?.toLowerCase().includes(m));
+    }
+    return false;
+  }
+
   async function copyMessageToClipboard(
     m: Message & { context?: Partial<ChatResponse> },
   ) {
@@ -326,6 +355,24 @@ function App() {
         )
         .join("\n\n"),
     );
+  }
+
+  const { dragAndDropHooks } = useDragAndDrop({
+    acceptedDragTypes: ["image/jpeg", "image/png"],
+    async onRootDrop(e) {
+      const images = await Promise.all(
+        e.items.filter(isFileDropItem).map(async (item) => ({
+          id: Math.random(),
+          url: URL.createObjectURL(await item.getFile()),
+          name: item.name,
+        })),
+      );
+      setImages(images);
+    },
+  });
+
+  function removeImage(image: ImageItem) {
+    setImages((prev) => prev.filter((i) => i.id != image.id));
   }
 
   return (
@@ -413,6 +460,7 @@ function App() {
               <Label className="text-neutral-700">System Prompt:</Label>
               {systemPromptEnabled && systemPrompt != DEFAULT_PROMPT ? (
                 <span
+                  aria-label="Reset system prompt"
                   className="absolute right-1 top-1 cursor-pointer rounded bg-neutral-400 p-0.5 px-2
                              text-xs text-white hover:bg-neutral-500 dark:bg-neutral-700 hover:dark:bg-neutral-600"
                   onClick={() => setSystemPrompt(DEFAULT_PROMPT)}
@@ -440,11 +488,47 @@ function App() {
               ></Checkbox>
             </div>
 
-            <div className="absolute bottom-0 left-0 w-full select-none p-4">
+            {hasCapability("vision") ? (
+              <div className="mt-4">
+                <GridList
+                  aria-label="Image drop list"
+                  items={images}
+                  dragAndDropHooks={dragAndDropHooks}
+                  renderEmptyState={() =>
+                    "This model supports vision. You can drop images here and ask questions about it."
+                  }
+                  selectionMode="multiple"
+                  selectedKeys={selectedImages}
+                  onSelectionChange={setSelectedImages}
+                  className="max-h-[300px] overflow-y-scroll rounded-xl border border-neutral-300 p-4 text-sm text-neutral-500"
+                >
+                  {(item) => (
+                    <GridListItem
+                      id={item.id}
+                      textValue={item.url}
+                      className="bg-neutral-300"
+                    >
+                      <div className="relative w-full">
+                        <img className="w-20" src={item.url} alt={item.name} />
+                        <Trash2Icon
+                          size="20"
+                          className="absolute right-2 top-2 cursor-pointer"
+                          onClick={() => removeImage(item)}
+                        />
+                      </div>
+                    </GridListItem>
+                  )}
+                </GridList>
+              </div>
+            ) : null}
+
+            <div className="flex-1"></div>
+
+            <div className="mb-4 w-full select-none">
               <div className="mt-4">
                 <Button
                   variant="secondary"
-                  className={`w-full gap-2 pt-3`}
+                  className="w-full gap-2 pt-3"
                   onPressEnd={clearMessages}
                   isDisabled={isGenerating || messages.length == 0}
                 >
@@ -473,7 +557,7 @@ function App() {
                       }
           `}
         >
-          <div className="relative m-auto flex h-full flex-col pb-36">
+          <div className="relative m-auto flex h-full flex-col">
             <div
               className="grid select-none grid-cols-[auto_minmax(0,_1fr)] gap-x-6 gap-y-4 overflow-y-auto px-8"
               ref={chatAreaRef}
@@ -561,7 +645,9 @@ function App() {
               )}
             </div>
 
-            <div className="absolute bottom-0 left-0 right-0 px-4 pb-3 pt-8 print:hidden">
+            <div className="flex-1"></div>
+
+            <div className="px-[4vw] pb-3 pt-8 print:hidden">
               <div
                 className="flex rounded-xl border-2 border-neutral-500/50 bg-white p-2
                               has-[:focus]:border-neutral-500 dark:bg-neutral-700"
@@ -608,7 +694,7 @@ function App() {
                 )}
               </div>
 
-              <div className="mt-3 flex min-w-[200px] flex-col gap-2 print:hidden">
+              <div className="mt-3 flex flex-col gap-2 print:hidden">
                 <div className="inline-flex w-full select-none justify-center text-xs text-neutral-400 dark:text-neutral-500">
                   LLMs can make mistakes. Consider checking important
                   information.
