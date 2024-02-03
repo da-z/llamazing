@@ -51,6 +51,7 @@ export interface GenerateRequest {
   raw?: boolean;
   format?: string;
   images?: Uint8Array[] | string[];
+  keep_alive?: string | number;
 
   options?: Partial<Options>;
 }
@@ -66,6 +67,7 @@ export interface ChatRequest {
   messages?: Message[];
   stream?: boolean;
   format?: string;
+  keep_alive?: string | number;
 
   options?: Partial<Options>;
 }
@@ -112,6 +114,7 @@ export interface ShowRequest {
 export interface EmbeddingsRequest {
   model: string;
   prompt: string;
+  keep_alive?: string | number;
 
   options?: Partial<Options>;
 }
@@ -174,11 +177,13 @@ export interface ShowResponse {
   parameters: string;
   template: string;
   system: string;
+  parent_model: string;
   format: string;
   family: string;
   families: string[];
   parameter_size: string;
   quatization_level: number;
+  messages: Message[];
 }
 
 export interface ListResponse {

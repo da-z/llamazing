@@ -1,21 +1,24 @@
 import * as utils from "./utils.js";
 
 import type {
-  ChatRequest,
-  ChatResponse,
-  Config,
-  EmbeddingsRequest,
-  EmbeddingsResponse,
-  ErrorResponse,
   Fetch,
+  Config,
   GenerateRequest,
-  GenerateResponse,
-  ListResponse,
-  ProgressResponse,
   PullRequest,
   PushRequest,
-  ShowRequest,
+  EmbeddingsRequest,
+  GenerateResponse,
+  EmbeddingsResponse,
+  ListResponse,
+  ProgressResponse,
+  ErrorResponse,
+  StatusResponse,
+  DeleteRequest,
+  CopyRequest,
   ShowResponse,
+  ShowRequest,
+  ChatRequest,
+  ChatResponse,
 } from "./interfaces.js";
 
 export class Ollama {
@@ -24,7 +27,7 @@ export class Ollama {
 
   constructor(config?: Partial<Config>) {
     this.config = {
-      host: utils.formatHost(config?.host ?? "http://localhost:11434"),
+      host: utils.formatHost(config?.host ?? "http://127.0.0.1:11434"),
     };
 
     this.fetch = fetch;
@@ -76,15 +79,25 @@ export class Ollama {
     }
   }
 
-  chat(
-    request: ChatRequest & { stream: true },
-  ): Promise<AsyncGenerator<ChatResponse>>;
-  chat(request: ChatRequest & { stream?: false }): Promise<ChatResponse>;
+  private async encodeImage(
+    image: Blob | Uint8Array | ArrayBuffer | string,
+  ): Promise<string> {
+    if (typeof image === "string") {
+      return image;
+    }
 
-  async chat(
-    request: ChatRequest,
-  ): Promise<ChatResponse | AsyncGenerator<ChatResponse>> {
-    return this.processStreamableRequest<ChatResponse>("chat", request);
+    const base64url = (await new Promise((r) => {
+      const reader = new FileReader();
+      reader.onload = () => r(reader.result);
+      if (image instanceof Blob) {
+        reader.readAsDataURL(image);
+      } else {
+        reader.readAsDataURL(new Blob([image]));
+      }
+    })) as any;
+
+    // remove the `data:...;base64,` part
+    return base64url.slice(base64url.indexOf(",") + 1);
   }
 
   generate(
@@ -97,7 +110,32 @@ export class Ollama {
   async generate(
     request: GenerateRequest,
   ): Promise<GenerateResponse | AsyncGenerator<GenerateResponse>> {
+    if (request.images) {
+      request.images = await Promise.all(
+        request.images.map(this.encodeImage.bind(this)),
+      );
+    }
     return this.processStreamableRequest<GenerateResponse>("generate", request);
+  }
+
+  chat(
+    request: ChatRequest & { stream: true },
+  ): Promise<AsyncGenerator<ChatResponse>>;
+  chat(request: ChatRequest & { stream?: false }): Promise<ChatResponse>;
+
+  async chat(
+    request: ChatRequest,
+  ): Promise<ChatResponse | AsyncGenerator<ChatResponse>> {
+    if (request.messages) {
+      for (const message of request.messages) {
+        if (message.images) {
+          message.images = await Promise.all(
+            message.images.map(this.encodeImage.bind(this)),
+          );
+        }
+      }
+    }
+    return this.processStreamableRequest<ChatResponse>("chat", request);
   }
 
   pull(
@@ -132,6 +170,20 @@ export class Ollama {
       username: request.username,
       password: request.password,
     });
+  }
+
+  async delete(request: DeleteRequest): Promise<StatusResponse> {
+    await utils.del(this.fetch, `${this.config.host}/api/delete`, {
+      name: request.model,
+    });
+    return { status: "success" };
+  }
+
+  async copy(request: CopyRequest): Promise<StatusResponse> {
+    await utils.post(this.fetch, `${this.config.host}/api/copy`, {
+      ...request,
+    });
+    return { status: "success" };
   }
 
   async list(): Promise<ListResponse> {
