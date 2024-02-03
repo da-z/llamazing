@@ -53,6 +53,12 @@ interface ImageItem {
   name: string;
 }
 
+interface Model {
+  id: string;
+  name: string;
+  capabilities: ("text" | "vision")[];
+}
+
 function App() {
   const [prompt, setPrompt] = useState(``);
   const [systemPrompt, setSystemPrompt] = useLocalStorageState(
@@ -64,8 +70,8 @@ function App() {
     false,
   );
   const [response, setResponse] = useState("");
-  const [models, setModels] = useState<string[]>([]);
-  const [model, setModel] = useLocalStorageState("mode", "");
+  const [models, setModels] = useState<Model[]>([]);
+  const [model, setModel] = useLocalStorageState("model", "");
   const [messages, setMessages] = useState<
     (Message & { context?: Partial<ChatResponse> })[]
   >([]);
@@ -91,7 +97,18 @@ function App() {
   const promptRef = useRef<HTMLTextAreaElement>(null);
 
   async function reloadModels() {
-    setModels((await ollama.list()).models.map((m) => m.name));
+    setModels(
+      (await ollama.list()).models.map(
+        (m) =>
+          ({
+            id: m.digest,
+            name: m.name,
+            capabilities: m.families?.includes("clip")
+              ? ["text", "vision"]
+              : ["text"],
+          }) as Model,
+      ),
+    );
   }
 
   useEffect(() => {
@@ -439,8 +456,8 @@ ${systemPromptEnabled ? systemPrompt : ""}`.trim(),
                 onSelectionChange={(s) => setModel(String(s))}
               >
                 {models.map((m, i) => (
-                  <ListBoxItem id={m} key={"model" + i}>
-                    {m}
+                  <ListBoxItem id={m.name} key={"model" + i}>
+                    {m.name}
                   </ListBoxItem>
                 ))}
               </Select>
@@ -496,7 +513,7 @@ ${systemPromptEnabled ? systemPrompt : ""}`.trim(),
                   renderEmptyState={() =>
                     "This model supports vision. You can drop images here and ask questions about them."
                   }
-                  selectionMode="multiple"
+                  selectionMode="single"
                   selectedKeys={selectedImages}
                   onSelectionChange={setSelectedImages}
                   className="max-h-[300px] overflow-y-scroll rounded-xl border border-neutral-300 p-4 text-sm text-neutral-500"
@@ -505,7 +522,7 @@ ${systemPromptEnabled ? systemPrompt : ""}`.trim(),
                     <ImageGridListItem id={item.id} textValue={item.url}>
                       <div className="relative">
                         <img
-                          className="h-[100px] w-[100px] rounded object-cover"
+                          className="h-[105px] w-[105px] rounded object-cover"
                           src={item.url}
                           alt={item.name}
                         />
