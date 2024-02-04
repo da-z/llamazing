@@ -42,7 +42,6 @@ import useLocalStorageState from "./hooks.ts";
 import { Checkbox } from "./rac/Checkbox.tsx";
 import copy from "clipboard-copy";
 import { isFileDropItem } from "react-aria";
-import type { Selection } from "react-aria-components";
 import { ImageGridList, ImageGridListItem } from "./rac/ImageGridList.tsx";
 
 const DEFAULT_PROMPT = `You are a helpful AI assistant trained on a vast amount of human knowledge. Answer as concisely as possible.`;
@@ -51,6 +50,7 @@ interface ImageItem {
   id: number;
   url: string;
   name: string;
+  blob?: Blob;
 }
 
 interface Model {
@@ -73,7 +73,7 @@ function App() {
   const [models, setModels] = useState<Model[]>([]);
   const [model, setModel] = useLocalStorageState("model", "");
   const [messages, setMessages] = useState<
-    (Message & { context?: Partial<ChatResponse> })[]
+    (Message & { context?: Partial<ChatResponse & { images?: ImageItem[] }> })[]
   >([]);
   const [currentTheme, setCurrentTheme] = useState<"dark" | "light">();
   const [themePreference, setThemePreference] = useLocalStorageState<
@@ -88,7 +88,7 @@ function App() {
 
   const [images, setImages] = useState<ImageItem[]>([]);
 
-  const [selectedImages, setSelectedImages] = useState<Selection>(new Set([]));
+  const [imageCache] = useState<Map<string, ImageItem>>(new Map());
 
   const sidePanelShownRef = useRef<boolean>(false);
   const stopGeneratingRef = useRef<boolean>(false);
@@ -224,8 +224,35 @@ function App() {
 
   type Capability = "vision";
 
+  async function fetchBlob(url: string) {
+    return await (await fetch(url)).blob();
+  }
+
+  async function updateImageCache(images: ImageItem[]) {
+    for (const img of images) {
+      // image already cached
+      if (imageCache.has(img.url)) {
+        continue;
+      }
+
+      // clone image blob, so it stays in cache even if original is removed
+      const imgCopy = (await fetchBlob(img.url)).slice();
+      imageCache.set(img.url, {
+        ...img,
+        blob: imgCopy,
+        url: URL.createObjectURL(imgCopy),
+      });
+    }
+  }
+
   const chat = async (message: string) => {
-    setMessages((prev) => [...prev, { role: "user", content: message }]);
+    // cache whatever is in images array when a message is sent
+    await updateImageCache(images);
+
+    setMessages((prev) => [
+      ...prev,
+      { role: "user", content: message, context: { images } },
+    ]);
 
     stopGeneratingRef.current = false;
     setIsGenerating(true);
@@ -513,13 +540,14 @@ ${systemPromptEnabled ? systemPrompt : ""}`.trim(),
                   renderEmptyState={() =>
                     "This model supports vision. You can drop images here and ask questions about them."
                   }
-                  selectionMode="single"
-                  selectedKeys={selectedImages}
-                  onSelectionChange={setSelectedImages}
-                  className="max-h-[300px] overflow-y-scroll rounded-xl border border-neutral-300 p-4 text-sm text-neutral-500"
+                  className="max-h-[300px] select-none overflow-y-scroll rounded-xl border border-neutral-300 p-4 text-sm text-neutral-500"
                 >
                   {(item) => (
-                    <ImageGridListItem id={item.id} textValue={item.url}>
+                    <ImageGridListItem
+                      id={item.url}
+                      key={item.id}
+                      textValue={item.name}
+                    >
                       <div className="relative">
                         <img
                           className="h-[105px] w-[105px] rounded object-cover"
@@ -569,13 +597,13 @@ ${systemPromptEnabled ? systemPrompt : ""}`.trim(),
                       ${
                         showSidePanel
                           ? "w-full translate-x-0"
-                          : "hidden w-[calc(100%_-_100vw)] translate-x-[100vw] sm:block sm:w-[calc(100%_-_320px)] sm:translate-x-[320px]"
+                          : "hidden w-[calc(100%-100vw)] translate-x-[100vw] sm:block sm:w-[calc(100%-320px)] sm:translate-x-[320px]"
                       }
           `}
         >
           <div className="relative m-auto flex h-full flex-col">
             <div
-              className="grid select-none grid-cols-[auto_minmax(0,_1fr)] gap-x-6 gap-y-4 overflow-y-auto px-8"
+              className="grid select-none grid-cols-[auto_minmax(0,1fr)] gap-x-6 gap-y-4 overflow-y-auto px-8"
               ref={chatAreaRef}
               onWheel={onWheel}
             >
@@ -584,7 +612,7 @@ ${systemPromptEnabled ? systemPrompt : ""}`.trim(),
                   className="absolute rounded bg-purple-400 p-[4px] text-white dark:bg-yellow-400 dark:text-yellow-900"
                   size="38"
                 />
-                {messages.length && (
+                {!!messages.length && (
                   <CopyIcon
                     className="absolute hidden cursor-pointer rounded bg-purple-400 p-[4px] text-white active:text-purple-700 group-hover:block dark:bg-yellow-400 dark:text-yellow-900 active:dark:text-black"
                     size="38"
@@ -604,13 +632,13 @@ ${systemPromptEnabled ? systemPrompt : ""}`.trim(),
                           <Clipboard
                             className="absolute cursor-pointer rounded bg-blue-400 p-[6px] text-white active:text-blue-700 dark:bg-orange-400 dark:text-orange-900 active:dark:text-black"
                             size="38"
-                            key={"icn_clip" + i}
+                            key={"icn_clip_" + i}
                             onClick={() => copyMessageToClipboard(m)}
                           />
                           <CircleUserRound
                             className="absolute rounded bg-blue-400 p-[6px] text-white group-hover:hidden dark:bg-orange-400 dark:text-orange-900"
                             size="38"
-                            key={"icn" + i}
+                            key={"icn_" + i}
                           />
                         </div>
                       ),
@@ -640,6 +668,20 @@ ${systemPromptEnabled ? systemPrompt : ""}`.trim(),
                       content={m.content}
                       key={"md" + i}
                     />
+                    {!!m.context?.images?.length && (
+                      <div className="grid w-full grid-cols-2 gap-6 px-4 pb-8">
+                        {m.role === "user" &&
+                          m.context.images.map((img) => (
+                            <div className="col-span-1">
+                              <img
+                                className="h-auto rounded object-cover"
+                                key={"img_" + img.id}
+                                src={imageCache.get(img.url)?.url}
+                              />
+                            </div>
+                          ))}
+                      </div>
+                    )}
                   </div>
                 </>
               ))}
