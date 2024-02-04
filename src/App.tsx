@@ -455,8 +455,8 @@ ${systemPromptEnabled ? systemPrompt : ""}`.trim(),
                 className="flex-1"
                 onSelectionChange={(s) => setModel(String(s))}
               >
-                {models.map((m, i) => (
-                  <ListBoxItem id={m.name} key={"model" + i}>
+                {models.map((m) => (
+                  <ListBoxItem id={m.name} key={"model_" + m.id}>
                     {m.name}
                   </ListBoxItem>
                 ))}
