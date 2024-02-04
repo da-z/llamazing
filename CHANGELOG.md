@@ -13,6 +13,7 @@
 
 ##### Bug Fixes
 
+*  do not send date and time to vision models. it confuses them it seems ([3809bcd3](https://github.com/da-z/llamazing/commit/3809bcd3fb350e3b00b7dca0032aabfb99e0f9ae))
 *  removing a model from ollama crashes app on model refresh ([65d25a11](https://github.com/da-z/llamazing/commit/65d25a11645e1b458d12f1a325bb91619cac29d0))
 
 #### 0.6.0 (2024-02-03)
@@ -29,7 +30,6 @@
 
 ##### New Features
 
-*  prep release 0.6.0 ([21463e67](https://github.com/da-z/llamazing/commit/21463e675b36330d543b486368e5a3093e85ab11))
 *  nicer image grid ([5b4ae379](https://github.com/da-z/llamazing/commit/5b4ae37978743fc187c7a0609976cadcaa289f1e))
 *  vision prompts ([e4e264db](https://github.com/da-z/llamazing/commit/e4e264db536002787f5ad8f1016a31f4832c71e8))
 
