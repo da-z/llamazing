@@ -246,13 +246,17 @@ function App() {
   }
 
   const chat = async (message: string) => {
-    // cache whatever is in images array when a message is sent
-    await updateImageCache(images);
+    if (hasCapability("vision")) {
+      // cache whatever is in images array when a message is sent
+      await updateImageCache(images);
 
-    setMessages((prev) => [
-      ...prev,
-      { role: "user", content: message, context: { images } },
-    ]);
+      setMessages((prev) => [
+        ...prev,
+        { role: "user", content: message, context: { images } },
+      ]);
+    } else {
+      setMessages((prev) => [...prev, { role: "user", content: message }]);
+    }
 
     stopGeneratingRef.current = false;
     setIsGenerating(true);
@@ -269,10 +273,11 @@ function App() {
         {
           role: "system",
           content: `${systemPromptEnabled ? systemPrompt : ""}
-Global date and time: ${utcDateFormatter.format(now)}
-Local date and time: ${localDateFormatter.format(now)}
-Location: ${Intl.DateTimeFormat().resolvedOptions().timeZone}
-${systemPromptEnabled ? systemPrompt : ""}`.trim(),
+${
+  !hasCapability("vision")
+    ? `Global date and time: ${utcDateFormatter.format(now)}\nLocal date and time: ${localDateFormatter.format(now)}\nLocation: ${Intl.DateTimeFormat().resolvedOptions().timeZone}`
+    : ""
+}`.trim(),
         },
         ...messages,
         hasCapability("vision")
