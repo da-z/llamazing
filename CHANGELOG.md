@@ -1,3 +1,20 @@
+#### 0.6.1 (2024-02-04)
+
+##### Chores
+
+*  bundle ollama-js license ([b69ec0a7](https://github.com/da-z/llamazing/commit/b69ec0a7348f4992750ecdb115679b39b5942aaf))
+*  add license ([98cbd94f](https://github.com/da-z/llamazing/commit/98cbd94fd9a6c5a5d7ce861f2c05db5378804806))
+
+##### New Features
+
+*  show images inline ([6bb36d92](https://github.com/da-z/llamazing/commit/6bb36d92c8a25131ceb3c3280bf7ac38d92438db))
+*  bundle fonts. now app can be used completely offline ([b725b27c](https://github.com/da-z/llamazing/commit/b725b27c6154384e167bce9a1c0ca506f65a2f0d))
+*  improve model capability detection. refinements ([68d59b98](https://github.com/da-z/llamazing/commit/68d59b98b7f8c552a1a43330d35d1f661336fbc1))
+
+##### Bug Fixes
+
+*  removing a model from ollama crashes app on model refresh ([65d25a11](https://github.com/da-z/llamazing/commit/65d25a11645e1b458d12f1a325bb91619cac29d0))
+
 #### 0.6.0 (2024-02-03)
 
 ##### Chores
