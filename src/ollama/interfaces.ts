@@ -164,6 +164,11 @@ export interface ModelResponse {
   modified_at: Date;
   size: number;
   digest: string;
+  details: ModelDetails;
+}
+
+export interface ModelDetails {
+  parent_model: string;
   format: string;
   family: string;
   families: string[];
