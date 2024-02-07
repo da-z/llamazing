@@ -53,10 +53,12 @@ interface ImageItem {
   blob?: Blob;
 }
 
+type Capability = "vision" | "text";
+
 interface Model {
   id: string;
   name: string;
-  capabilities: ("text" | "vision")[];
+  capabilities: Capability[];
 }
 
 function App() {
@@ -103,7 +105,7 @@ function App() {
           ({
             id: m.digest,
             name: m.name,
-            capabilities: m.families?.includes("clip")
+            capabilities: m.details.families?.includes("clip")
               ? ["text", "vision"]
               : ["text"],
           }) as Model,
@@ -114,6 +116,7 @@ function App() {
   useEffect(() => {
     (async () => {
       await reloadModels();
+      console.log(models);
     })();
   }, []);
 
@@ -222,8 +225,6 @@ function App() {
     timeStyle: "long",
   });
 
-  type Capability = "vision";
-
   async function fetchBlob(url: string) {
     return await (await fetch(url)).blob();
   }
@@ -246,7 +247,7 @@ function App() {
   }
 
   const chat = async (message: string) => {
-    if (hasCapability("vision")) {
+    if (hasCapability(model, "vision")) {
       // cache whatever is in images array when a message is sent
       await updateImageCache(images);
 
@@ -262,6 +263,7 @@ function App() {
     setIsGenerating(true);
 
     setResponse(" ");
+    setResponse(" ");
 
     setAutoScroll(true);
 
@@ -274,13 +276,13 @@ function App() {
           role: "system",
           content: `${systemPromptEnabled ? systemPrompt : ""}
 ${
-  !hasCapability("vision")
+  !hasCapability(model, "vision")
     ? `Global date and time: ${utcDateFormatter.format(now)}\nLocal date and time: ${localDateFormatter.format(now)}\nLocation: ${Intl.DateTimeFormat().resolvedOptions().timeZone}`
     : ""
 }`.trim(),
         },
         ...messages,
-        hasCapability("vision")
+        hasCapability(model, "vision")
           ? { role: "user", content: message, images: images.map((i) => i.url) }
           : { role: "user", content: message },
       ],
@@ -380,12 +382,8 @@ ${
     stopGeneratingRef.current = true;
   }
 
-  function hasCapability(c: Capability) {
-    // TODO: use capabilities from API (when ready)
-    if (c === "vision") {
-      return ["llava"].some((m) => model?.toLowerCase().includes(m));
-    }
-    return false;
+  function hasCapability(model: string, c: Capability) {
+    return models.find((m) => m.name === model)?.capabilities.includes(c);
   }
 
   async function copyMessageToClipboard(
@@ -536,7 +534,7 @@ ${
               ></Checkbox>
             </div>
 
-            {hasCapability("vision") && (
+            {hasCapability(model, "vision") && (
               <div className="mt-4">
                 <ImageGridList
                   aria-label="Image drop list"
