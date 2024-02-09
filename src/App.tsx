@@ -673,6 +673,7 @@ ${
                               <img
                                 className="h-auto rounded object-cover"
                                 key={"img_" + img.id}
+                                alt={img.name}
                                 src={imageCache.get(img.url)?.url}
                               />
                             </div>
