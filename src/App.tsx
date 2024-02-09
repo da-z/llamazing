@@ -92,7 +92,6 @@ function App() {
 
   const [imageCache] = useState<Map<string, ImageItem>>(new Map());
 
-  const sidePanelShownRef = useRef<boolean>(false);
   const stopGeneratingRef = useRef<boolean>(false);
 
   const chatAreaRef = useRef<HTMLDivElement>(null);
@@ -116,13 +115,8 @@ function App() {
   useEffect(() => {
     (async () => {
       await reloadModels();
-      console.log(models);
     })();
   }, []);
-
-  useEffect(() => {
-    sidePanelShownRef.current = showSidePanel;
-  }, [showSidePanel]);
 
   function getSystemThemePreference() {
     if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
@@ -344,8 +338,8 @@ ${
   };
 
   const toggleSidePanel = useCallback(() => {
-    setShowSidePanel(!sidePanelShownRef.current);
-  }, [setShowSidePanel]);
+    setShowSidePanel(!showSidePanel);
+  }, [showSidePanel, setShowSidePanel]);
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
@@ -363,7 +357,7 @@ ${
     return function cleanup() {
       document.removeEventListener("keydown", handleKeyDown as never);
     };
-  }, [toggleSidePanel]);
+  }, [showSidePanel, toggleSidePanel]);
 
   function canSubmit() {
     return !isGenerating && prompt && model && models.length;
