@@ -88,18 +88,23 @@ li pre {
 .prose h1 {
   font-size: 2rem;
 }
+
 .prose h2 {
   font-size: 1.7rem;
 }
+
 .prose h3 {
   font-size: 1.5rem;
 }
+
 .prose h4 {
   font-size: 1.3rem;
 }
+
 .prose h5 {
   font-size: 1.2rem;
 }
+
 .prose h6 {
   font-size: 1rem;
 }

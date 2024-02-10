@@ -7,8 +7,7 @@ import remarkMath from "remark-math";
 import remarkGfm from "remark-gfm";
 import { Clipboard, ClipboardCheck } from "lucide-react";
 import rehypeMathjax from "rehype-mathjax";
-import { light } from "./assets/prism/themes/light.ts";
-import { dark } from "./assets/prism/themes/dark.ts";
+import { dark, light } from "./assets/prism/themes.ts";
 
 interface CodeBlockProps {
   language: string;
