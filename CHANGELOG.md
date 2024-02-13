@@ -1,3 +1,20 @@
+#### 0.6.2 (2024-02-13)
+
+##### Chores
+
+*  add alt ([ceb9f27b](https://github.com/da-z/llamazing/commit/ceb9f27bf92d239329e4922ea8fe965ceaae41dc))
+*  clean-up - sidePanelShownRef not necessary ([4a6742fe](https://github.com/da-z/llamazing/commit/4a6742fe83d19cd69d4cb09213c438691ecd91bd))
+*  clean-up hasCapability ([fc3de4dc](https://github.com/da-z/llamazing/commit/fc3de4dcfb0a7ab071d08eca83e956db5fcce4d3))
+*  update ollama model based on what the rest api returns currently ([f1c05d70](https://github.com/da-z/llamazing/commit/f1c05d70a1a2cb2b38fcc9e5e287d2df4c8e84d3))
+
+##### New Features
+
+*  extract theme colors ([afe0871d](https://github.com/da-z/llamazing/commit/afe0871df38b354dbbdb72818962152b8c9b647b))
+
+##### Bug Fixes
+
+*  truncate long model names ([ea57dcfb](https://github.com/da-z/llamazing/commit/ea57dcfbb3fba696427c75e05a4976f61ccffe75))
+
 #### 0.6.1 (2024-02-04)
 
 ##### Chores
