@@ -54,7 +54,7 @@ export function Select<T extends object>({
     >
       {label && <Label>{label}</Label>}
       <Button className={styles}>
-        <SelectValue className="flex-1 text-sm placeholder-shown:italic" />
+        <SelectValue className="flex-1 overflow-hidden overflow-ellipsis whitespace-nowrap text-sm placeholder-shown:italic" />
         <ChevronDown
           aria-hidden
           className="h-4 w-4 text-gray-600 group-disabled:text-gray-200 dark:text-zinc-400 dark:group-disabled:text-zinc-600 forced-colors:text-[ButtonText] forced-colors:group-disabled:text-[GrayText]"

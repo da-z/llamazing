@@ -473,18 +473,21 @@ ${
             </h1>
 
             <div className="flex items-center gap-3">
-              <Select
-                selectedKey={model}
-                aria-label="select-model"
-                className="flex-1"
-                onSelectionChange={(s) => setModel(String(s))}
-              >
-                {models.map((m) => (
-                  <ListBoxItem id={m.name} key={"model_" + m.id}>
-                    {m.name}
-                  </ListBoxItem>
-                ))}
-              </Select>
+              <TooltipTrigger>
+                <Select
+                  selectedKey={model}
+                  aria-label="select-model"
+                  className="max-w-[calc(100%-30px)] flex-1"
+                  onSelectionChange={(s) => setModel("" + s)}
+                >
+                  {models.map((m) => (
+                    <ListBoxItem id={m.name} key={"model_" + m.id}>
+                      {m.name}
+                    </ListBoxItem>
+                  ))}
+                </Select>
+                <Tooltip>{model}</Tooltip>
+              </TooltipTrigger>
               <RefreshCwIcon
                 size="16"
                 className="shrink-0 cursor-pointer hover:text-neutral-500 active:text-neutral-700"
