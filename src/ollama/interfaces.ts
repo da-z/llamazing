@@ -173,7 +173,7 @@ export interface ModelDetails {
   family: string;
   families: string[];
   parameter_size: string;
-  quatization_level: number;
+  quantization_level: number;
 }
 
 export interface ShowResponse {
@@ -187,7 +187,7 @@ export interface ShowResponse {
   family: string;
   families: string[];
   parameter_size: string;
-  quatization_level: number;
+  quantization_level: number;
   messages: Message[];
 }
 
