@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import "./App.css";
 import { Button } from "./rac/Button.tsx";
-import ollama, { ChatResponse, Message } from "./ollama";
+import { ChatResponse, Message, Ollama } from "./ollama";
 import {
   Bot,
   ChevronLeftIcon,
@@ -22,6 +22,7 @@ import {
   PlusIcon,
   RefreshCwIcon,
   SendHorizonal,
+  Settings2Icon,
   StopCircleIcon,
   SunIcon,
   SunMoonIcon,
@@ -31,6 +32,8 @@ import MarkdownRenderer from "./MarkdownRenderer.tsx";
 import { Label } from "./rac/Field.tsx";
 import { Tooltip } from "./rac/Tooltip.tsx";
 import {
+  DialogTrigger,
+  Heading,
   TextArea,
   TooltipTrigger,
   useDragAndDrop,
@@ -43,8 +46,13 @@ import { Checkbox } from "./rac/Checkbox.tsx";
 import copy from "clipboard-copy";
 import { isFileDropItem } from "react-aria";
 import { ImageGridList, ImageGridListItem } from "./rac/ImageGridList.tsx";
+import { Modal } from "./rac/Modal.tsx";
+import { Dialog } from "./rac/Dialog.tsx";
+import { TextField } from "./rac/TextField.tsx";
 
 const DEFAULT_PROMPT = `You are a helpful AI assistant trained on a vast amount of human knowledge. Answer as concisely as possible.`;
+
+const OLLAMA_DEFAULT_HOST = "http://localhost:11434";
 
 interface ImageItem {
   id: number;
@@ -74,6 +82,11 @@ function App() {
   const [response, setResponse] = useState("");
   const [models, setModels] = useState<Model[]>([]);
   const [model, setModel] = useLocalStorageState("model", "");
+  const [ollamaHost, setOllamaHost] = useLocalStorageState(
+    "ollamaHost",
+    OLLAMA_DEFAULT_HOST,
+  );
+  const [newOllamaHost, setNewOllamaHost] = useState("");
   const [messages, setMessages] = useState<
     (Message & { context?: Partial<ChatResponse & { images?: ImageItem[] }> })[]
   >([]);
@@ -97,9 +110,12 @@ function App() {
   const chatAreaRef = useRef<HTMLDivElement>(null);
   const promptRef = useRef<HTMLTextAreaElement>(null);
 
-  async function reloadModels() {
+  const ollama = useRef<Ollama>(new Ollama());
+
+  const reloadModels = useCallback(async () => {
+    setModels([]);
     setModels(
-      (await ollama.list()).models.map(
+      (await ollama.current.list()).models.map(
         (m) =>
           ({
             id: m.digest,
@@ -110,13 +126,13 @@ function App() {
           }) as Model,
       ),
     );
-  }
+  }, [ollama]);
 
   useEffect(() => {
-    (async () => {
-      await reloadModels();
-    })();
-  }, []);
+    stopGenerating();
+    ollama.current = new Ollama({ host: ollamaHost ?? OLLAMA_DEFAULT_HOST });
+    (async () => await reloadModels())();
+  }, [ollamaHost, reloadModels]);
 
   function getSystemThemePreference() {
     if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
@@ -255,15 +271,12 @@ function App() {
 
     stopGeneratingRef.current = false;
     setIsGenerating(true);
-
     setResponse(" ");
-    setResponse(" ");
-
     setAutoScroll(true);
 
     const now = new Date();
 
-    const res = await ollama.chat({
+    const res = await ollama.current.chat({
       model,
       messages: [
         {
@@ -415,10 +428,62 @@ ${
     setImages((prev) => prev.filter((i) => i.id != image.id));
   }
 
+  function saveSettings() {
+    setOllamaHost(newOllamaHost ?? OLLAMA_DEFAULT_HOST);
+  }
+
   return (
     <div className={currentTheme}>
       <div className="relative flex h-screen cursor-default bg-white font-sans text-gray-700 dark:bg-neutral-700 dark:text-white">
-        <div className="absolute right-4 top-4 z-10 print:hidden">
+        <div className="absolute right-4 top-4 z-10 flex items-center gap-2 print:hidden">
+          <DialogTrigger>
+            <TooltipTrigger delay={400} closeDelay={50}>
+              <Button
+                className="rounded-full border-none bg-neutral-100 p-1.5 text-neutral-500 transition-none hover:bg-blue-600
+                         hover:text-white dark:bg-neutral-600 dark:text-white dark:hover:bg-blue-300
+                         dark:hover:text-neutral-800"
+              >
+                <Settings2Icon size="18"></Settings2Icon>
+              </Button>
+              <Tooltip>Settings</Tooltip>
+            </TooltipTrigger>
+            <Modal isDismissable>
+              <Dialog>
+                {({ close }) => (
+                  <>
+                    <Heading slot="title" className="text-xl">
+                      Settings
+                    </Heading>
+
+                    <div className="mt-6 flex flex-col gap-3">
+                      <TextField
+                        label="Ollama URL"
+                        defaultValue={ollamaHost}
+                        onChange={setNewOllamaHost}
+                        placeholder={OLLAMA_DEFAULT_HOST}
+                      />
+                    </div>
+
+                    <div className="mt-6 flex justify-end gap-2">
+                      <Button variant="secondary" onPress={close}>
+                        Cancel
+                      </Button>
+                      <Button
+                        type="submit"
+                        onPress={() => {
+                          saveSettings();
+                          close();
+                        }}
+                      >
+                        Save
+                      </Button>
+                    </div>
+                  </>
+                )}
+              </Dialog>
+            </Modal>
+          </DialogTrigger>
+
           <TooltipTrigger delay={400} closeDelay={50}>
             <ToggleButton
               onChange={toggleThemePreference}
@@ -454,8 +519,6 @@ ${
             <ChevronLeftIcon size="24" strokeWidth="3"></ChevronLeftIcon>
           ) : (
             <ChevronRightIcon size="24" strokeWidth="3"></ChevronRightIcon>
-          ) : (
-            <ChevronLeftIcon size="24" strokeWidth="3"></ChevronLeftIcon>
           )}
         </ToggleButton>
 
@@ -488,7 +551,9 @@ ${
                     </ListBoxItem>
                   ))}
                 </Select>
-                <Tooltip>{model}</Tooltip>
+                <Tooltip className={models.length ? "block" : "hidden"}>
+                  {model}
+                </Tooltip>
               </TooltipTrigger>
               <RefreshCwIcon
                 size="16"
