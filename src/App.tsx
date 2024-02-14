@@ -451,6 +451,8 @@ ${
                      dark:text-neutral-600 hover:dark:bg-neutral-600 hover:dark:text-neutral-400"
         >
           {showSidePanel ? (
+            <ChevronLeftIcon size="24" strokeWidth="3"></ChevronLeftIcon>
+          ) : (
             <ChevronRightIcon size="24" strokeWidth="3"></ChevronRightIcon>
           ) : (
             <ChevronLeftIcon size="24" strokeWidth="3"></ChevronLeftIcon>
@@ -458,7 +460,7 @@ ${
         </ToggleButton>
 
         <div
-          className={`fixed w-full transform transition-transform duration-0 sm:duration-300 ${showSidePanel ? "-translate-x-full" : "translate-x-0"}`}
+          className={`fixed w-full transform transition-transform duration-0 sm:duration-300 ${showSidePanel ? "translate-x-0" : "-translate-x-full"}`}
         >
           <aside className="relative flex h-screen min-h-[100vh] w-[100vw] flex-col bg-neutral-200 p-6 py-2 dark:bg-neutral-800 sm:w-[320px]">
             <h1 className="mx-auto mb-6 mt-6 flex select-none items-center gap-2 text-3xl">
@@ -596,8 +598,8 @@ ${
           className={`min-h-[100vh] transform pt-16 font-prose transition-transform duration-0 sm:duration-300
                       ${
                         showSidePanel
-                          ? "w-full translate-x-0"
-                          : "hidden w-[calc(100%-100vw)] translate-x-[100vw] sm:block sm:w-[calc(100%-320px)] sm:translate-x-[320px]"
+                          ? "hidden w-[calc(100%-100vw)] translate-x-[100vw] sm:block sm:w-[calc(100%-320px)] sm:translate-x-[320px]"
+                          : "w-full translate-x-0"
                       }
           `}
         >
