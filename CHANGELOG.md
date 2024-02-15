@@ -1,3 +1,19 @@
+#### 0.6.3 (2024-02-15)
+
+##### Chores
+
+*  use localhost ([cbaa7f20](https://github.com/da-z/llamazing/commit/cbaa7f205ab0e229489a71fa29769af80af5b686))
+*  bump deps ([7c343879](https://github.com/da-z/llamazing/commit/7c343879e21aee60970b138ef00c0a101149d066))
+
+##### New Features
+
+*  configurable Ollama URL ([9396ba3f](https://github.com/da-z/llamazing/commit/9396ba3f25faef96b6325ee3c9aad988ca09e577))
+
+##### Bug Fixes
+
+*  showSidePanel logic was inverted ([0713299c](https://github.com/da-z/llamazing/commit/0713299c9dae36bee76ac5976bddf66c1913f53f))
+*  typo ([24b99223](https://github.com/da-z/llamazing/commit/24b992231da22989a27458ff8324e158e38b6135))
+
 #### 0.6.2 (2024-02-13)
 
 ##### Chores
