@@ -58,13 +58,13 @@ Build one yourself (see below) or download a release from https://github.com/da-
 **❗Note**: In order for the standalone app to work, you have to either manually start Ollama server like this:
 
 ```shell
-$ OLLAMA_ORIGINS=*://localhost ollama serve
+$ OLLAMA_ORIGINS=* ollama serve
 ```
 
 or set the property globally (once) and restart Ollama server
 
 ```shell
-$ launchctl setenv OLLAMA_ORIGINS '*://localhost'
+$ launchctl setenv OLLAMA_ORIGINS '*'
 ```
 
 ---
