@@ -18,12 +18,24 @@ $ ollama pull dolphin-mistral
 
 ## Using LLaMazing
 
-For using the app itself, there are 2 options:
+For using the app itself, there are 3 options:
 
-- Web UI
+- Web demo (with local Ollama)
+- Local Web UI
 - Stand-alone app
 
-### Option 1 : Web UI
+
+### Option 1 : Web demo
+
+Allow browser to connect to your Ollama instance:
+
+```shell
+$ launchctl setenv OLLAMA_ORIGINS 'https://my.llamaz.ing'
+```
+
+Head over to https://my.llamaz.ing and chat with your local Ollama instance.
+
+### Option 2 : Local Web UI
 
 #### Install dependencies:
 
@@ -37,7 +49,7 @@ $ pnpm i
 $ pnpm dev --open
 ```
 
-### Option 2 : Standalone app
+### Option 3 : Standalone app
 
 Build one yourself (see below) or download a release from https://github.com/da-z/llamazing/releases
 
@@ -55,13 +67,27 @@ or set the property globally (once) and restart Ollama server
 $ launchctl setenv OLLAMA_ORIGINS '*://localhost'
 ```
 
-#### Running standalone app in dev mode
+---
+
+## Other
+
+### Building Web app
+
+Build app (output goes to `./dist` folder)
+
+```shell
+$ pnpm build
+```
+
+### Running standalone app in dev mode
+
+Install Tauri [prerequisites](https://tauri.app/v1/guides/getting-started/prerequisites) based on your system: 
 
 ```shell
 $ pnpm tauri dev
 ```
 
-#### Building app (Mac Universal)
+### Building app (Mac Universal)
 
 ```shell
 $ pnpm tauri build --target universal-apple-darwin
