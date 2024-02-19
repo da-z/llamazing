@@ -224,17 +224,6 @@ function App() {
     }
   };
 
-  const utcDateFormatter = new Intl.DateTimeFormat("en-US", {
-    dateStyle: "full",
-    timeStyle: "long",
-    timeZone: "utc",
-  });
-
-  const localDateFormatter = new Intl.DateTimeFormat("en-US", {
-    dateStyle: "full",
-    timeStyle: "long",
-  });
-
   async function fetchBlob(url: string) {
     return await (await fetch(url)).blob();
   }
@@ -256,6 +245,32 @@ function App() {
     }
   }
 
+  function addContext(model: string, prompt: string) {
+    const now = new Date();
+
+    const utcDateFormatter = new Intl.DateTimeFormat("en-US", {
+      dateStyle: "full",
+      timeStyle: "long",
+      timeZone: "utc",
+    });
+
+    const localDateFormatter = new Intl.DateTimeFormat("en-US", {
+      dateStyle: "full",
+      timeStyle: "long",
+    });
+
+    if (!hasCapability(model, "vision")) {
+      prompt =
+        `
+        Global date and time: ${utcDateFormatter.format(now)}
+        Local date and time: ${localDateFormatter.format(now)}
+        Location: ${Intl.DateTimeFormat().resolvedOptions().timeZone}
+        ` + prompt;
+    }
+
+    return prompt;
+  }
+
   const chat = async (message: string) => {
     if (hasCapability(model, "vision")) {
       // cache whatever is in images array when a message is sent
@@ -274,19 +289,15 @@ function App() {
     setResponse(" ");
     setAutoScroll(true);
 
-    const now = new Date();
-
     const res = await ollama.current.chat({
       model,
       messages: [
         {
           role: "system",
-          content: `${systemPromptEnabled ? systemPrompt : ""}
-${
-  !hasCapability(model, "vision")
-    ? `Global date and time: ${utcDateFormatter.format(now)}\nLocal date and time: ${localDateFormatter.format(now)}\nLocation: ${Intl.DateTimeFormat().resolvedOptions().timeZone}`
-    : ""
-}`.trim(),
+          content: addContext(
+            model,
+            systemPromptEnabled ? systemPrompt : "",
+          ).trim(),
         },
         ...messages,
         hasCapability(model, "vision")
