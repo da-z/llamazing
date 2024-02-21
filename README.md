@@ -1,6 +1,6 @@
 # LLaMazing
 
-A simple frontend to Ollama.
+A simple Web / UI / App / Frontend to Ollama.
 
 | Light Theme               | Dark Theme               |
 | ------------------------- | ------------------------ |
