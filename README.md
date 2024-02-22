@@ -24,7 +24,6 @@ For using the app itself, there are 3 options:
 - Local Web UI
 - Stand-alone app
 
-
 ### Option 1 : Web demo
 
 Allow browser to connect to your Ollama instance:
@@ -81,7 +80,7 @@ $ pnpm build
 
 ### Running standalone app in dev mode
 
-Install Tauri [prerequisites](https://tauri.app/v1/guides/getting-started/prerequisites) based on your system: 
+Install Tauri [prerequisites](https://tauri.app/v1/guides/getting-started/prerequisites) based on your system:
 
 ```shell
 $ pnpm tauri dev

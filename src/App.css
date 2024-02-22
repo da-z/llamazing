@@ -113,7 +113,8 @@ th {
   text-align: left;
 }
 
-th, td {
+th,
+td {
   padding: 4px;
 }
 
