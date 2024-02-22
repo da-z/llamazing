@@ -108,3 +108,21 @@ li pre {
 .prose h6 {
   font-size: 1rem;
 }
+
+th {
+  text-align: left;
+}
+
+th, td {
+  padding: 4px;
+}
+
+.dark th {
+  background-color: #444444;
+  border-bottom: 1px solid #575757;
+}
+
+.light th {
+  background-color: #f6f6f6;
+  border-bottom: 1px solid #e7e7e7;
+}
