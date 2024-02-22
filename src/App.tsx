@@ -294,9 +294,9 @@ function App() {
       messages: [
         {
           role: "system",
-          content: addContext(
-            model,
-            systemPromptEnabled ? systemPrompt : "",
+          content: (systemPromptEnabled
+            ? addContext(model, systemPrompt)
+            : ""
           ).trim(),
         },
         ...messages,
