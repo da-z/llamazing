@@ -51,8 +51,9 @@ import { Dialog } from "./rac/Dialog.tsx";
 import { TextField } from "./rac/TextField.tsx";
 
 const DEFAULT_PROMPT = `You are a helpful AI assistant trained on a vast amount of human knowledge. Answer as concisely as possible.`;
-
-const OLLAMA_DEFAULT_HOST = "http://localhost:11434";
+const DEFAULT_HOST = "http://localhost:11434";
+const DEFAULT_ADD_CONTEXT = false;
+const DEFAULT_SHOW_SIDE_PANEL = true;
 
 interface ImageItem {
   id: number;
@@ -69,6 +70,11 @@ interface Model {
   capabilities: Capability[];
 }
 
+type Settings = {
+  ollamaHost: string;
+  addContextEnabled: boolean;
+};
+
 function App() {
   const [prompt, setPrompt] = useState(``);
   const [systemPrompt, setSystemPrompt] = useLocalStorageState(
@@ -82,11 +88,7 @@ function App() {
   const [response, setResponse] = useState("");
   const [models, setModels] = useState<Model[]>([]);
   const [model, setModel] = useLocalStorageState("model", "");
-  const [ollamaHost, setOllamaHost] = useLocalStorageState(
-    "ollamaHost",
-    OLLAMA_DEFAULT_HOST,
-  );
-  const [newOllamaHost, setNewOllamaHost] = useState("");
+
   const [messages, setMessages] = useState<
     (Message & { context?: Partial<ChatResponse & { images?: ImageItem[] }> })[]
   >([]);
@@ -98,8 +100,19 @@ function App() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [showSidePanel, setShowSidePanel] = useLocalStorageState(
     "showSidePanel",
-    true,
+    DEFAULT_SHOW_SIDE_PANEL,
   );
+
+  const [ollamaHost, setOllamaHost] = useLocalStorageState(
+    "ollamaHost",
+    DEFAULT_HOST,
+  );
+  const [addContextEnabled, setAddContextEnabled] = useLocalStorageState(
+    "addContext",
+    DEFAULT_ADD_CONTEXT,
+  );
+
+  let settings: Settings = initSettings();
 
   const [images, setImages] = useState<ImageItem[]>([]);
 
@@ -130,7 +143,7 @@ function App() {
 
   useEffect(() => {
     stopGenerating();
-    ollama.current = new Ollama({ host: ollamaHost ?? OLLAMA_DEFAULT_HOST });
+    ollama.current = new Ollama({ host: ollamaHost ?? DEFAULT_HOST });
     (async () => await reloadModels())();
   }, [ollamaHost, reloadModels]);
 
@@ -245,7 +258,11 @@ function App() {
     }
   }
 
-  function addContext(model: string, prompt: string) {
+  function preProcess(model: string, prompt: string) {
+    if (!addContextEnabled) {
+      return prompt;
+    }
+
     const now = new Date();
 
     const utcDateFormatter = new Intl.DateTimeFormat("en-US", {
@@ -294,9 +311,9 @@ function App() {
       messages: [
         {
           role: "system",
-          content: (systemPromptEnabled
-            ? addContext(model, systemPrompt)
-            : ""
+          content: preProcess(
+            model,
+            systemPromptEnabled ? systemPrompt : "",
           ).trim(),
         },
         ...messages,
@@ -439,8 +456,16 @@ function App() {
     setImages((prev) => prev.filter((i) => i.id != image.id));
   }
 
-  function saveSettings() {
-    setOllamaHost(newOllamaHost ?? OLLAMA_DEFAULT_HOST);
+  function save(settings: Settings) {
+    setOllamaHost(settings.ollamaHost ?? DEFAULT_HOST);
+    setAddContextEnabled(settings.addContextEnabled ?? DEFAULT_ADD_CONTEXT);
+  }
+
+  function initSettings() {
+    return {
+      ollamaHost,
+      addContextEnabled,
+    } as Settings;
   }
 
   return (
@@ -462,27 +487,39 @@ function App() {
               <Dialog>
                 {({ close }) => (
                   <>
-                    <Heading slot="title" className="text-xl">
+                    <Heading slot="title" className="select-none text-xl">
                       Settings
                     </Heading>
 
                     <div className="mt-6 flex flex-col gap-3">
                       <TextField
                         label="Ollama URL"
-                        defaultValue={ollamaHost}
-                        onChange={setNewOllamaHost}
-                        placeholder={OLLAMA_DEFAULT_HOST}
+                        defaultValue={settings.ollamaHost}
+                        onChange={(v) => (settings.ollamaHost = v)}
+                        placeholder={DEFAULT_HOST}
                       />
+                      <Checkbox
+                        defaultSelected={settings.addContextEnabled}
+                        onChange={(v) => (settings.addContextEnabled = v)}
+                      >
+                        Send Context (Time, Timezone)
+                      </Checkbox>
                     </div>
 
                     <div className="mt-6 flex justify-end gap-2">
-                      <Button variant="secondary" onPress={close}>
+                      <Button
+                        variant="secondary"
+                        onPress={() => {
+                          settings = initSettings();
+                          close();
+                        }}
+                      >
                         Cancel
                       </Button>
                       <Button
                         type="submit"
                         onPress={() => {
-                          saveSettings();
+                          save(settings);
                           close();
                         }}
                       >
