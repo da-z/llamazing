@@ -1,3 +1,21 @@
+#### 0.6.4 (2024-02-23)
+
+##### Chores
+
+*  format ([fe15ced3](https://github.com/da-z/llamazing/commit/fe15ced3a061d933efe34eaf4c1b62917a4af632))
+*  send context (local time, etc) only if system prompt enabled ([626c7430](https://github.com/da-z/llamazing/commit/626c74300fa5abbfe1a73a00748e6154ba39c2f6))
+*  SEO ([539946ed](https://github.com/da-z/llamazing/commit/539946edbd341fd648b4e1e0e608626c2a42e7fc))
+*  small refactor ([1d658c55](https://github.com/da-z/llamazing/commit/1d658c55a55943334b963357dba739a925ecf165))
+
+##### New Features
+
+*  make "add context" a setting (defaults to false) ([61c42325](https://github.com/da-z/llamazing/commit/61c42325db12e072de51de7ad833840566516688))
+*  nicer table headers ([1d9c548a](https://github.com/da-z/llamazing/commit/1d9c548ac98cc5c8142c0477849f0d80bac4c0b8))
+
+##### Other Changes
+
+*  web demo ([d4956a60](https://github.com/da-z/llamazing/commit/d4956a60263daf87ff8465041eb40316a9f2b8bd))
+
 #### 0.6.3 (2024-02-15)
 
 ##### Chores
