@@ -26,12 +26,14 @@ const useLocalStorageState = <T>(key: string, initialValue: T) => {
   }, [key, value]);
 
   const updateValue = (newValue: T | ((prevState: T) => T)) => {
-    const updatedValue =
-      typeof newValue === "function"
-        ? (newValue as (prevState: T) => T)(value)
-        : newValue;
-
-    setValue(updatedValue);
+    setValue((prevValue) => {
+      const updatedValue =
+        typeof newValue === "function"
+          ? (newValue as (prevState: T) => T)(prevValue)
+          : newValue;
+      localStorage.setItem(key, JSON.stringify(updatedValue));
+      return updatedValue;
+    });
   };
 
   return [value, updateValue] as const;
