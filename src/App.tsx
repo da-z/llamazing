@@ -17,6 +17,7 @@ import {
   CommandIcon,
   CopyIcon,
   DeleteIcon,
+  FileQuestionIcon,
   Globe,
   MoonIcon,
   PlusIcon,
@@ -89,9 +90,10 @@ function App() {
   const [models, setModels] = useState<Model[]>([]);
   const [model, setModel] = useLocalStorageState("model", "");
 
-  const [messages, setMessages] = useState<
+  const [messages, setMessages] = useLocalStorageState<
     (Message & { context?: Partial<ChatResponse & { images?: ImageItem[] }> })[]
-  >([]);
+  >("messages", []);
+
   const [currentTheme, setCurrentTheme] = useState<"dark" | "light">();
   const [themePreference, setThemePreference] = useLocalStorageState<
     "dark" | "light" | "system"
@@ -784,18 +786,27 @@ function App() {
                       key={"md" + i}
                     />
                     {!!m.context?.images?.length && (
-                      <div className="grid w-full grid-cols-2 gap-6 px-4 pb-8">
+                      <div className="grid w-full grid-cols-2 gap-6 px-4 pb-6">
                         {m.role === "user" &&
-                          m.context.images.map((img) => (
-                            <div className="col-span-1">
-                              <img
-                                className="h-auto rounded object-cover"
-                                key={"img_" + img.id}
-                                alt={img.name}
-                                src={imageCache.get(img.url)?.url}
-                              />
-                            </div>
-                          ))}
+                          m.context.images.map((img) =>
+                            imageCache.get(img.url) ? (
+                              <div className="col-span-1">
+                                <img
+                                  className="h-auto rounded object-cover"
+                                  key={"img_" + img.id}
+                                  alt={img.name}
+                                  src={imageCache.get(img.url)?.url}
+                                />
+                              </div>
+                            ) : (
+                              <div className="col-span-1 flex h-14 w-14 items-center justify-center rounded border-2 border-gray-200">
+                                <FileQuestionIcon
+                                  size="24"
+                                  className="text-gray-200"
+                                ></FileQuestionIcon>
+                              </div>
+                            ),
+                          )}
                       </div>
                     )}
                   </div>
