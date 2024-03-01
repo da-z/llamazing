@@ -1,18 +1,21 @@
-#### 0.6.5 (2024-02-29)
+#### 0.6.5 (2024-03-01)
 
 ##### Chores
 
-*  clean ([8095e3df](https://github.com/da-z/llamazing/commit/8095e3df755a279e16a0cd9929fb87b9c9d84a61))
-*  format ([54bbc258](https://github.com/da-z/llamazing/commit/54bbc2585dd85cc2b748aafba1c40b4ac1002dfd))
+*  update .prettierignore ([75e19764](https://github.com/da-z/llamazing/commit/75e197647df949eb757028c7108460ce05fc79a4))
+*  prep 0.6.5 release ([b182f62e](https://github.com/da-z/llamazing/commit/b182f62e5e018adbd3a02a72ff1bea8e274eab18))
+*  clean ([cf6dc4c4](https://github.com/da-z/llamazing/commit/cf6dc4c4c9e79de14f9c586ac8ebc1b3aa2bd2cd))
+*  format ([c70f8423](https://github.com/da-z/llamazing/commit/c70f8423bbd7fe51a671ba3a592f9d713ec204cb))
+*  update release-tauri.yml ([81b07660](https://github.com/da-z/llamazing/commit/81b07660cc438a876f477133f1bf8dedbe2fb3fe))
 *  update release-tauri.yml ([b3eb13ef](https://github.com/da-z/llamazing/commit/b3eb13ef1baeb3d5e31ce7ecec5b1b4cfc136513))
 
 ##### New Features
 
-*  use local storage for previous messages ([c929b9f3](https://github.com/da-z/llamazing/commit/c929b9f337c2b9ba864f79b6d066de5c1eccc990))
+*  use local storage for previous messages ([d817f0a3](https://github.com/da-z/llamazing/commit/d817f0a350b28c75704ad86f30f76044e6a5686f))
 
 ##### Bug Fixes
 
-*  prev state is empty ([28f428aa](https://github.com/da-z/llamazing/commit/28f428aace1dcdeed2848ca1c2e387d607a16115))
+*  prev state is empty ([93c265e3](https://github.com/da-z/llamazing/commit/93c265e3440107829b30fc3436f71c27af4d4c09))
 
 #### 0.6.4 (2024-02-23)
 
