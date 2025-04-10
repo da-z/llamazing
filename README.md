@@ -24,31 +24,7 @@ For using the app itself, there are 3 options:
 - Local Web UI
 - Stand-alone app
 
-### Option 1 : Web demo
-
-Allow browser to connect to your Ollama instance:
-
-```shell
-$ launchctl setenv OLLAMA_ORIGINS 'https://my.llamaz.ing'
-```
-
-Head over to https://my.llamaz.ing and chat with your local Ollama instance.
-
-### Option 2 : Local Web UI
-
-#### Install dependencies:
-
-```shell
-$ pnpm i
-```
-
-#### Run in browser (dev mode)
-
-```shell
-$ pnpm dev --open
-```
-
-### Option 3 : Standalone app
+### Option 1 : Standalone app
 
 Build one yourself (see below) or download a release from https://github.com/da-z/llamazing/releases
 
@@ -64,6 +40,20 @@ or set the property globally (once) and restart Ollama server
 
 ```shell
 $ launchctl setenv OLLAMA_ORIGINS '*'
+```
+
+### Option 2 : Local Web UI
+
+#### Install dependencies:
+
+```shell
+$ pnpm i
+```
+
+#### Run in browser (dev mode)
+
+```shell
+$ pnpm dev --open
 ```
 
 ---
